@@ -16,6 +16,7 @@ public class SobelOperator {
 	private int mSizeX;
 	private int mSizeY;
 	private double[][] mGradient;
+	private double mGradientMax;
 	private double[][] mDirection;
 
 	private static final int[][] KERNEL_X = new int[][] { { 1, 0, -1 },
@@ -47,6 +48,8 @@ public class SobelOperator {
 		BufferedImage YCbCrImage = Util.RGBToYCbCr(mImage);
 		Raster YCbCrRaster = YCbCrImage.getRaster();
 
+		mGradientMax = 0;
+		
 		// ignore border pixels
 		for (x = 1; x < mSizeX - 1; x++) {
 			for (y = 1; y < mSizeY - 1; y++) {
@@ -63,7 +66,24 @@ public class SobelOperator {
 
 				// compute gradient and direction
 				mGradient[x][y] = Math.sqrt(gx * gx + gy * gy);
+				if (mGradient[x][y] > mGradientMax) {
+					mGradientMax = mGradient[x][y];
+				}
+				
 				mDirection[x][y] = Math.atan2(gy, gx);
+			}
+		}
+	}
+	
+	/**
+	 * Normalizes gradient values to between 0 and 1
+	 */
+	public void normalizeGradient() {
+		if (mGradient != null) {			
+			for (int i=0; i < mSizeX; i++) {
+				for (int j=0; j < mSizeY; j++) {
+					mGradient[i][j] = mGradient[i][j] / mGradientMax;
+				}
 			}
 		}
 	}
