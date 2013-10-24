@@ -1,18 +1,21 @@
+package cs3246.a2.sample;
+
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.*;
+
 import javax.imageio.ImageIO;
 import javax.swing.*;
 
 public class ColorCoherenceVectorFrame {
 
-	private static BufferedImage img;
-	private static int[] originalImage;
-	private static int[] currentImage;
-	private static int[][]  colorTagged;
-	private static int numOfDifferentAreas;
-	private static int[] alpha;
-	private static int[] beta;
+	public static BufferedImage img;
+	public static int[] originalImage;
+	public static int[] currentImage;
+	public static int[][]  colorTagged;
+	public static int numOfDifferentAreas;
+	public static int[] alpha;
+	public static int[] beta;
 	
 	/**
 	 * We first blur the image slightly by replacing pixel values with the average value in a small local neighborhood
@@ -53,6 +56,8 @@ public class ColorCoherenceVectorFrame {
 	/**
 	 * We first blur the image slightly by Gaussian Filter.
 	 * This eliminates small variations between neighboring pixels.
+	 * Algorithm from: http://en.wikipedia.org/wiki/Gaussian_blur and 
+	 * http://d.hatena.ne.jp/nowokay/touch/20081007
 	 * @param w
 	 * @param h
 	 */
@@ -168,72 +173,113 @@ public class ColorCoherenceVectorFrame {
             }
         }
 	}
-		
 	
-    public static void main(String[] args) throws IOException{
-        
-    	JFrame f = new JFrame("CCV");
-        f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        f.setLayout(new GridLayout(3, 1));
-        f.setSize(1200, 800);
+	public static void computeCCV(String fileName) throws IOException{
 
-        JLabel l1 = new JLabel();
-        JLabel l2 = new JLabel();
-        JLabel l3 = new JLabel();
-        f.add(l1);
-        f.add(l2);
-        f.add(l3);
-
-        BufferedImage imgsrc = ImageIO.read(new File("6.jpg"));
+        BufferedImage imgsrc = ImageIO.read(new File(fileName));
         int w = imgsrc.getWidth();
         int h = imgsrc.getHeight();
-        
-        // Size Normalization
-        
-        int limit = 200;
-        if(w < h){
-            w = w * limit / h;
-            h = limit;
-        }else{
-            h = h * limit / w;
-            w = limit;
-        }
         
         img = new BufferedImage(w, h, BufferedImage.TYPE_INT_RGB);
         Graphics2D grp = (Graphics2D) img.getGraphics();
         grp.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         grp.drawImage(imgsrc, 0, 0, w, h, null);
         grp.dispose();
-
-        l1.setIcon(new ImageIcon(img));
-
+        
 		originalImage = img.getRGB(0, 0, w, h, null, 0, w);
         currentImage = new int[originalImage.length];
         
         // Gaussian Filter
         applyGaussianFilter(w, h);
         //applyAverageFilter(w, h);
-        l2.setIcon(new ImageIcon(img));
-
+        
         // Color Reduction
         reduceColor();
         
-        img = new BufferedImage(w, h, BufferedImage.TYPE_INT_RGB);
-        img.setRGB(0, 0, w, h, currentImage, 0, w);
-        l3.setIcon(new ImageIcon(img));
-
         // Tagging
         tagColor(w, h);
         
         // Aggregate
         computeCoherence(w, h);
         
-        // Diaplay
+        // Display
         for(int i = 0; i < alpha.length; ++i){
             if(alpha[i] == 0 && beta[i] == 0) continue;
             System.out.printf("%2d (%3d, %3d)%n", i, alpha[i], beta[i]);
         }
+	}
+	
+	private static void test(String fileName) throws IOException{
+    	JFrame f = new JFrame("CCV");
+      f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+      f.setLayout(new GridLayout(3, 1));
+      f.setSize(1200, 1800);
 
-        f.setVisible(true);
+      JLabel l1 = new JLabel();
+      JLabel l2 = new JLabel();
+      JLabel l3 = new JLabel();
+      f.add(l1);
+      f.add(l2);
+      f.add(l3);
+
+      BufferedImage imgsrc = ImageIO.read(new File(fileName));
+      int w = imgsrc.getWidth();
+      int h = imgsrc.getHeight();
+      
+      // Size Normalization
+      
+      int limit = 200;
+      if(w < h){
+          w = w * limit / h;
+          h = limit;
+      }else{
+          h = h * limit / w;
+          w = limit;
+      }
+      
+      img = new BufferedImage(w, h, BufferedImage.TYPE_INT_RGB);
+      Graphics2D grp = (Graphics2D) img.getGraphics();
+      grp.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+      grp.drawImage(imgsrc, 0, 0, w, h, null);
+      grp.dispose();
+
+      l1.setIcon(new ImageIcon(img));
+
+		originalImage = img.getRGB(0, 0, w, h, null, 0, w);
+      currentImage = new int[originalImage.length];
+      
+      // Gaussian Filter
+      applyGaussianFilter(w, h);
+      //applyAverageFilter(w, h);
+      l2.setIcon(new ImageIcon(img));
+
+      // Color Reduction
+      reduceColor();
+      
+      img = new BufferedImage(w, h, BufferedImage.TYPE_INT_RGB);
+      img.setRGB(0, 0, w, h, currentImage, 0, w);
+      l3.setIcon(new ImageIcon(img));
+
+      // Tagging
+      tagColor(w, h);
+      
+      // Aggregate
+      computeCoherence(w, h);
+      
+      // Display
+      for(int i = 0; i < alpha.length; ++i){
+          if(alpha[i] == 0 && beta[i] == 0) continue;
+          System.out.printf("%2d (%3d, %3d)%n", i, alpha[i], beta[i]);
+      }
+
+      f.setVisible(true);
+	}
+		
+	
+    public static void main(String[] args) throws IOException{
+    	
+    	computeCCV("./image/test2.jpg");
+    	
+    	//test("./image/test2.jpg");
     }
 }
