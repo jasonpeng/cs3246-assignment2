@@ -93,9 +93,11 @@ public class SobelOperator implements FeatureExtractor {
 		
 		for (int i=0; i < mSizeX; i++) {
 			for (int j=0; j < mSizeY; j++) {
-				int qG = (int) (mGradient[i][j] * 8); // 0..7
-				int qD = (int) ((mDirection[i][j] + Math.PI) / (2*Math.PI) * 8); // 0..7
+				int qG = (int) Math.floor(mGradient[i][j] * 8); // 0..7
+				int qD = (int) Math.floor((mDirection[i][j] + Math.PI) / (2*Math.PI) * 8); // 0..7
+				//System.out.println("qG: " + qG + " qD: " + qD);
 				int index = qG + 8 * qD;
+				index = (index >= 64) ? 63 : index;
 				mFeature[index] += 1;
 				if (mFeature[index] > maxQ) {
 					maxQ = mFeature[index];

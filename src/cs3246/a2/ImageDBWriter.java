@@ -17,16 +17,16 @@ public class ImageDBWriter {
 	
 	public void write() {
 		Gson gson = new Gson();
-		for (Image image : mImages) {
-			String json = gson.toJson(image);
-			
-			try {
-				FileWriter writer = new FileWriter(mOutFile);
-				writer.write(json);
-				writer.close();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+		
+		String json = gson.toJson(mImages);
+		
+		try {
+			FileWriter writer = new FileWriter(mOutFile);
+			writer.write(json);
+			writer.close();
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
+		
 	}
 }
