@@ -21,7 +21,10 @@ public class SobelOperatorTest {
 			BufferedImage imageConverted = new BufferedImage(x, y, BufferedImage.TYPE_BYTE_GRAY);
 			for (int i=0; i<x; i++) {
 				for (int j=0; j<y; j++) {
-					imageConverted.setRGB(i, j, (int) (gradient[i][j] * 255));
+					int argb = 0;
+					int grey = (int) (gradient[i][j] * 255);
+					argb = (grey << 16) | (grey << 8) | grey;
+					imageConverted.setRGB(i, j, argb);
 				}
 			}
 			ImageIO.write(imageConverted, "bmp", new File("image/edge.bmp"));
