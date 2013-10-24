@@ -14,17 +14,17 @@ import cs3246.a2.Document;
 
 public class ColorCoherenceVector implements FeatureExtractor{
 
-	public static BufferedImage img;
-	public static int[] originalImage;
-	public static int[] currentImage;
-	public static int[][]  colorTagged;
-	public static int numOfDifferentAreas;
-	public static double[] alpha;
-	public static double[] beta;
-	private static final int NUM_OF_FILES = 30;
-	private static final double u = 0.9;
-	private static final String FILE_PATH = "./../image/";
-	private static final String FILE_UPLOAD_PATH = "./server/uploads/";
+	public  BufferedImage img;
+	public  int[] originalImage;
+	public  int[] currentImage;
+	public  int[][]  colorTagged;
+	public  int numOfDifferentAreas;
+	public  double[] alpha;
+	public  double[] beta;
+	private  final static int NUM_OF_FILES = 30;
+	private  final double u = 0.9;
+	private  final static String FILE_PATH = "./../image/";
+	private  final String FILE_UPLOAD_PATH = "./server/uploads/";
 
 	
 	/**
@@ -33,7 +33,7 @@ public class ColorCoherenceVector implements FeatureExtractor{
 	 * @param w
 	 * @param h
 	 */
-	private static void applyAverageFilter(int w, int h){
+	private  void applyAverageFilter(int w, int h){
 		for (int i = 1; i < h - 1; i++){
 			for (int j = 1; j < w - 1; j++){
 				
@@ -71,7 +71,7 @@ public class ColorCoherenceVector implements FeatureExtractor{
 	 * @param w
 	 * @param h
 	 */
-	private static void applyGaussianFilter(int w, int h){		
+	private  void applyGaussianFilter(int w, int h){		
 		
 		// The pre-defined Gaussian Filter
 		int[][] GaussianFilter = {
@@ -107,7 +107,7 @@ public class ColorCoherenceVector implements FeatureExtractor{
         img.setRGB(0, 0, w, h, currentImage, 0, w);  
 	}
 	
-	private static void reduceColor(){
+	private  void reduceColor(){
 		// 192 in binary: 11000000
 		int flag = 192;
 		
@@ -119,7 +119,7 @@ public class ColorCoherenceVector implements FeatureExtractor{
         }
 	}
 	
-	private static void tagColor(int w, int h){
+	private  void tagColor(int w, int h){
 
         colorTagged = new int[w][h];
         numOfDifferentAreas = 0;
@@ -160,7 +160,7 @@ public class ColorCoherenceVector implements FeatureExtractor{
         }
 	}
 	
-	private static void computeCoherence(int w, int h){
+	private  void computeCoherence(int w, int h){
 		int[] count = new int[numOfDifferentAreas];
         int[] color = new int[numOfDifferentAreas];
         for(int x = 0; x < w; ++x){
@@ -184,12 +184,12 @@ public class ColorCoherenceVector implements FeatureExtractor{
         }
 	}
 	
-	public static void computeCCV(String fileName) throws IOException{
+	public  void computeCCV(String fileName) throws IOException{
 		BufferedImage imgsrc = ImageIO.read(new File(fileName));
 		computeCCV(imgsrc);
 	}
 	
-	public static void computeCCV(BufferedImage imgsrc) throws IOException{
+	public  void computeCCV(BufferedImage imgsrc) throws IOException{
 
         
         int w = imgsrc.getWidth();
@@ -220,14 +220,14 @@ public class ColorCoherenceVector implements FeatureExtractor{
         // Normalize
         for (int i = 0; i < alpha.length; ++i){
         	if(alpha[i] == 0 && beta[i] == 0) continue;
-        	alpha[i] /= h * w / 10000;
-        	beta[i] /= h * w / 10000;
+        	alpha[i] /= h * w;
+        	beta[i] /= h * w;
         	//System.out.printf("%d (%3f, %3f)%n", i, alpha[i], beta[i]);
         }
 
 	}
 	
-	private static void test(String fileName) throws IOException{
+	private  void test(String fileName) throws IOException{
     	JFrame f = new JFrame("CCV");
       f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
       f.setLayout(new GridLayout(3, 1));
@@ -293,14 +293,14 @@ public class ColorCoherenceVector implements FeatureExtractor{
       f.setVisible(true);
 	}
 	
-	public static double similarityMeasure(double[] alphaQuery, double[] alphaDoc, double[] betaQuery, double[] betaDoc){
+	public  double similarityMeasure(double[] alphaQuery, double[] alphaDoc, double[] betaQuery, double[] betaDoc){
 		double alphaSim = computeNormalizedSimilarity(alphaQuery, alphaDoc);
 		double betaSim = computeNormalizedSimilarity(betaQuery, betaDoc);
-		System.out.println("Alpha and Beta: " + alphaSim + " " + betaSim);
+		System.out.println("In similarityMeasuer, Alpha and Beta: " + alphaSim + " " + betaSim);
 		return u * alphaSim + (1 - u) * betaSim;
 	}
 	
-	public static double computeNormalizedSimilarity(double[] arr1, double[] arr2){
+	public  double computeNormalizedSimilarity(double[] arr1, double[] arr2){
 		double result = 0;
 		
 		for(int i = 0; i < arr1.length; i++){
@@ -314,12 +314,10 @@ public class ColorCoherenceVector implements FeatureExtractor{
 		return result;
 	}
 	
-	public static String[] findSimilarResults(String fileName) throws IOException{
+	public  String[] findSimilarResults(String fileName) throws IOException{
     	ArrayList<Document> list = new ArrayList<Document>();
     	
     	computeCCV(fileName);
-    	double[] alpha1 = alpha;
-    	double[] beta1 = beta;
     	
     	for (int i = 1; i <= NUM_OF_FILES; i++){
 
@@ -328,12 +326,11 @@ public class ColorCoherenceVector implements FeatureExtractor{
     			continue;
     		}
     		System.out.println("Processing image: " + i);
-
-    		computeCCV(newName);
-        	double[] alpha2 = alpha;
-        	double[] beta2 = beta;
-        	
-    		double result = similarityMeasure(alpha1, alpha2, beta1, beta2);
+    		
+    		ColorCoherenceVector vec = new ColorCoherenceVector();
+    		double[] feature = vec.getFeature(ImageIO.read(new File(newName)));
+    		double result = computeSimilarity(feature, new NormalizedSimilarity());
+    		
     		Document doc = new Document(newName, result);
     		list.add(doc);
     	}
@@ -362,29 +359,61 @@ public class ColorCoherenceVector implements FeatureExtractor{
 			result[i] = alpha[i];
 		}
 		for(int i = 64; i < 128; i++){
-			result[i] = beta[i];
+			result[i] = beta[i - 64];
 		}
 		return result;
 	}
 	
+	@Override
+	public double computeSimilarity(double[] document, Similarity sim) {
+		double alphaInDoc[] = new double[64];
+		double betaInDoc[] = new double[64];
+		
+		for (int i = 0; i < 64; i++){
+			alphaInDoc[i] = document[i];
+		}
+		for (int j = 64; j < 128; j++){
+			betaInDoc[j - 64] = document[j];
+		}
+		
+		double alphaSim = sim.compute(alpha, alphaInDoc);
+		double betaSim = sim.compute(beta, betaInDoc);
+		System.out.println("In computeSimilarity, Alpha and Beta: " + alphaSim + " " + betaSim);
+		
+		return u * alphaSim + (1 - u) * betaSim;	
+	}
+	
     public static void main(String[] args) throws IOException{
     	
-//    	computeCCV(FILE_PATH + "query1.jpg");
-//    	double[] alpha1 = alpha;
-//    	double[] beta1 = beta;
+//    	ColorCoherenceVector vec = new ColorCoherenceVector();
 //    	
-//    	computeCCV(FILE_PATH + "15.jpg");
-//    	double[] alpha2 = alpha;
-//    	double[] beta2 = beta;
+//    	vec.computeCCV(FILE_PATH + "1.jpg");
+//    	double[] alpha1 = vec.alpha;
+//    	double[] beta1 = vec.beta;
 //    	
-//    	double result = similarityMeasure(alpha1, alpha2, beta1, beta2);
-//    	System.out.println("Result is: " + result);
-    	
-    	String[] results = new String[NUM_OF_FILES];
-    	results = findSimilarResults(FILE_PATH + "query1.jpg");
-    	
-    	for (int i = 0; i < NUM_OF_FILES - 1; i++){
-    		System.out.println(results[i]);
-    	}
+//    	ColorCoherenceVector vec2 = new ColorCoherenceVector();
+//    	double[] document = vec2.getFeature(ImageIO.read(new File(FILE_PATH + "1.jpg")));
+//    	
+//    	double alphaInDoc[] = new double[64];
+//		double betaInDoc[] = new double[64];
+//		
+//		for (int i = 0; i < 64; i++){
+//			alphaInDoc[i] = document[i];
+//		}
+//		for (int j = 64; j < 128; j++){
+//			betaInDoc[j - 64] = document[j];
+//		}
+//		
+//		double result1 = vec.similarityMeasure(alpha1, alphaInDoc, beta1, betaInDoc);
+//    	double result2 = vec.computeSimilarity(document, new NormalizedSimilarity());
+
+
+//    	ColorCoherenceVector vec = new ColorCoherenceVector();
+//    	String[] results = new String[NUM_OF_FILES];
+//    	results = vec.findSimilarResults(FILE_PATH + "query1.jpg");
+//    	
+//    	for (int i = 0; i < NUM_OF_FILES - 1; i++){
+//    		System.out.println(results[i]);
+//    	}
     }
 }

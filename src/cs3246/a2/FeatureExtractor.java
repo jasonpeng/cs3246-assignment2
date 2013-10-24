@@ -5,5 +5,6 @@ import java.awt.image.BufferedImage;
 public interface FeatureExtractor {
 	
 	double[] getFeature(BufferedImage bi);
+	double computeSimilarity(double[] document, Similarity sim);
 	
 }

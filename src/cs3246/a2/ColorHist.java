@@ -47,6 +47,8 @@ public class ColorHist extends JFrame implements FeatureExtractor{
     private BufferedImage buffered2; 
     private Histogram hist1; 
     private Histogram hist2; 
+    
+    private double bins[];
       
     public ColorHist() { 
         
@@ -229,7 +231,7 @@ public class ColorHist extends JFrame implements FeatureExtractor{
     public double[] getHist(BufferedImage image) { 
         int imHeight = image.getHeight(); 
         int imWidth = image.getWidth(); 
-        double[] bins = new double[3*dim]; 
+        bins = new double[3*dim]; 
         int step = 256 / dim; 
         Raster raster = image.getRaster(); 
         for(int i = 0; i < imWidth; i++) 
@@ -266,5 +268,10 @@ public class ColorHist extends JFrame implements FeatureExtractor{
 	@Override
 	public double[] getFeature(BufferedImage bi) {
 		return getHist(bi);
+	}
+
+	@Override
+	public double computeSimilarity(double[] document, Similarity sim) {
+		return sim.compute(bins, document);
 	} 
 } 

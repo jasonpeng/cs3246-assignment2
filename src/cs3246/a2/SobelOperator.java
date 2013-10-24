@@ -144,4 +144,10 @@ public class SobelOperator implements FeatureExtractor {
 		return mFeature;
 	}
 
+	@Override
+	public double computeSimilarity(double[] document, Similarity sim) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
 }
