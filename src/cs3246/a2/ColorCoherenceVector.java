@@ -23,6 +23,8 @@ public class ColorCoherenceVector implements FeatureExtractor{
 	public  double[] beta;
 	private  final static int NUM_OF_FILES = 30;
 	private  final double u = 0.9;
+	private  final double t = 0.0000125;
+	private final int THRESHOLD = 10;
 	private  final static String FILE_PATH = "./../image/";
 	private  final String FILE_UPLOAD_PATH = "./server/uploads/";
 
@@ -121,40 +123,40 @@ public class ColorCoherenceVector implements FeatureExtractor{
 	
 	private  void tagColor(int w, int h){
 
-        colorTagged = new int[w][h];
+        colorTagged = new int[h][w];
         numOfDifferentAreas = 0;
-        for(int y = 0; y < h; ++y){
-            for(int x = 0; x < w; ++x){
-                int col = currentImage[y * w + x];
-                if(y > 0){
-                    if(x > 0){
-                        if(currentImage[(y - 1) * w + x - 1] == col){
-                            // With the upper-left
-                            colorTagged[x][y] = colorTagged[x - 1][y - 1];
+        for(int row = 0; row < h; row++){
+            for(int column = 0; column < w; column++){
+                int color = currentImage[row * w + column];
+                if(row > 0){
+                    // Same with the upper-left
+                    if(column > 0){
+                        if(currentImage[(row - 1) * w + column - 1] == color){
+                            colorTagged[row][column] = colorTagged[row - 1][column - 1];
                             continue;
                         }
                     }
-                    if(currentImage[(y - 1) * w + x] == col){
-                        // With the above
-                        colorTagged[x][y] = colorTagged[x][y - 1];
+                    // Same with the above
+                    if(currentImage[(row - 1) * w + column] == color){
+                        colorTagged[row][column] = colorTagged[row - 1][column];
                         continue;
                     }
-                    if(x < w - 1){
-                        if(currentImage[(y - 1) * w + x + 1] == col){
-                            // With the right
-                            colorTagged[x][y] = colorTagged[x + 1][y - 1];
+                    // Same with the upper-right
+                    if(column < w - 1){
+                        if(currentImage[(row - 1) * w + column + 1] == color){
+                            colorTagged[row][column] = colorTagged[row - 1][column + 1];
                             continue;
                         }
                     }
                 }
-                if(x > 0){
-                    if(currentImage[y * w + x - 1] == col){
-                        // With the left
-                        colorTagged[x][y] = colorTagged[x - 1][y];
+                // Same with the left
+                if(column > 0){
+                    if(currentImage[row * w + column - 1] == color){
+                        colorTagged[row][column] = colorTagged[row][column - 1];
                         continue;
                     }
                 }
-                colorTagged[x][y] = numOfDifferentAreas;
+                colorTagged[row][column] = numOfDifferentAreas;
                 numOfDifferentAreas++;
             }
         }
@@ -163,10 +165,10 @@ public class ColorCoherenceVector implements FeatureExtractor{
 	private  void computeCoherence(int w, int h){
 		int[] count = new int[numOfDifferentAreas];
         int[] color = new int[numOfDifferentAreas];
-        for(int x = 0; x < w; ++x){
-            for(int y = 0; y < h; ++y){
+        for(int x = 0; x < h; x++){
+            for(int y = 0; y < w; y++){
                 count[colorTagged[x][y]]++;
-                color[colorTagged[x][y]] = currentImage[y * w + x];
+                color[colorTagged[x][y]] = currentImage[x * w + y];
             }
         }
         
@@ -174,12 +176,15 @@ public class ColorCoherenceVector implements FeatureExtractor{
         beta = new double[64];
         
         for(int i = 0; i < numOfDifferentAreas; ++i){
+        	// d: current color, represented in 24-bit RGB
             int d = color[i];
+            // Convert d to 6-bit RGB, ranging from 0 to 63
             color[i] = (((d >> 22) & 3) << 4) + (((d >> 14) & 3) << 2) + ((d >> 6) & 3);
-            if(count[i] < 20){
-                beta[color[i]] ++;
+            
+            if(count[i] < t * w * h || count[i] < THRESHOLD){
+                beta[color[i]]++;
             }else{
-                alpha[color[i]] ++;
+                alpha[color[i]]++;
             }
         }
 	}
@@ -218,7 +223,7 @@ public class ColorCoherenceVector implements FeatureExtractor{
         computeCoherence(w, h);
         
         // Normalize
-        for (int i = 0; i < alpha.length; ++i){
+        for (int i = 0; i < alpha.length; i++){
         	if(alpha[i] == 0 && beta[i] == 0) continue;
         	alpha[i] /= h * w;
         	beta[i] /= h * w;
@@ -263,7 +268,7 @@ public class ColorCoherenceVector implements FeatureExtractor{
 
       l1.setIcon(new ImageIcon(img));
 
-		originalImage = img.getRGB(0, 0, w, h, null, 0, w);
+      originalImage = img.getRGB(0, 0, w, h, null, 0, w);
       currentImage = new int[originalImage.length];
       
       // Gaussian Filter
@@ -375,7 +380,6 @@ public class ColorCoherenceVector implements FeatureExtractor{
 		for (int j = 64; j < 128; j++){
 			betaInDoc[j - 64] = document[j];
 		}
-		
 		double alphaSim = sim.compute(alpha, alphaInDoc);
 		double betaSim = sim.compute(beta, betaInDoc);
 		System.out.println("In computeSimilarity, Alpha and Beta: " + alphaSim + " " + betaSim);
@@ -408,12 +412,12 @@ public class ColorCoherenceVector implements FeatureExtractor{
 //    	double result2 = vec.computeSimilarity(document, new NormalizedSimilarity());
 
 
-//    	ColorCoherenceVector vec = new ColorCoherenceVector();
-//    	String[] results = new String[NUM_OF_FILES];
-//    	results = vec.findSimilarResults(FILE_PATH + "query1.jpg");
-//    	
-//    	for (int i = 0; i < NUM_OF_FILES - 1; i++){
-//    		System.out.println(results[i]);
-//    	}
+    	ColorCoherenceVector vec = new ColorCoherenceVector();
+    	String[] results = new String[NUM_OF_FILES];
+    	results = vec.findSimilarResults(FILE_PATH + "query1.jpg");
+    	
+    	for (int i = 0; i < NUM_OF_FILES - 1; i++){
+    		System.out.println(results[i]);
+    	}
     }
 }
