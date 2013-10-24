@@ -106,9 +106,7 @@ public class SobelOperator implements FeatureExtractor {
 		}
 			
 		for (int k=0; k < 64; k++) {
-			if (mFeature[k] > maxQ) {
-				mFeature[k] = mFeature[k] / maxQ;
-			}
+			mFeature[k] = mFeature[k] / maxQ;
 		}
 	}
 	
