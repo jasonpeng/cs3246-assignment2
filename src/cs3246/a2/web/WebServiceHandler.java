@@ -60,7 +60,9 @@ public class WebServiceHandler {
 			double scoreEdge = edge.computeSimilarity(similarityEdge, nSim);
 			double scoreCCV = ccv.computeSimilarity(similarityCCV, nSim);
 			
-			double finalScore = scoreHist + scoreEdge + scoreCCV;
+			double finalScore = scoreHist * 1.5 + scoreEdge / 10 + scoreCCV * 200;
+			
+			// System.out.println("hist, edge, score" + scoreHist + " " + scoreEdge + " " + scoreCCV);
 			
 			Document doc = new Document(image.getFilename(), finalScore);
     		list.add(doc);

@@ -23,10 +23,9 @@ public class ColorCoherenceVector implements FeatureExtractor{
 	public  double[] beta;
 	private  final static int NUM_OF_FILES = 30;
 	private  final double u = 0.9;
-	private  final double t = 0.0000125;
-	private final int THRESHOLD = 10;
-	private  final static String FILE_PATH = "./../image/";
-	private  final String FILE_UPLOAD_PATH = "./server/uploads/";
+	private  final double t = 0.00000001;
+	private final int THRESHOLD = 15;
+	private  final static String FILE_PATH = "./image/";
 
 	
 	/**
@@ -301,7 +300,7 @@ public class ColorCoherenceVector implements FeatureExtractor{
 	public  double similarityMeasure(double[] alphaQuery, double[] alphaDoc, double[] betaQuery, double[] betaDoc){
 		double alphaSim = computeNormalizedSimilarity(alphaQuery, alphaDoc);
 		double betaSim = computeNormalizedSimilarity(betaQuery, betaDoc);
-		System.out.println("In similarityMeasuer, Alpha and Beta: " + alphaSim + " " + betaSim);
+		//System.out.println("In similarityMeasuer, Alpha and Beta: " + alphaSim + " " + betaSim);
 		return u * alphaSim + (1 - u) * betaSim;
 	}
 	
@@ -382,7 +381,7 @@ public class ColorCoherenceVector implements FeatureExtractor{
 		}
 		double alphaSim = sim.compute(alpha, alphaInDoc);
 		double betaSim = sim.compute(beta, betaInDoc);
-		System.out.println("In computeSimilarity, Alpha and Beta: " + alphaSim + " " + betaSim);
+		//System.out.println("In computeSimilarity, Alpha and Beta: " + alphaSim + " " + betaSim);
 		
 		return u * alphaSim + (1 - u) * betaSim;	
 	}
