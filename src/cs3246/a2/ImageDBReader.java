@@ -3,6 +3,7 @@ package cs3246.a2;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import com.google.gson.Gson;
@@ -15,19 +16,10 @@ public class ImageDBReader {
 		BufferedReader br; 
 	    try {
 	    	mImages = new ArrayList<Image>();
-	    	
-	    	br = new BufferedReader(new FileReader(db));
-	        String line = br.readLine();
-	        Gson gson = new Gson();
 	        
-	        while (line != null) {
-	        	Image image = gson.fromJson(line, Image.class);
-	        	
-	        	mImages.add(image);
-	        	
-	            line = br.readLine();
-	        }
-	        br.close();
+	        Gson gson = new Gson();
+	        Image[] images = gson.fromJson(new FileReader(db), Image[].class);
+	        Collections.addAll(mImages, images);
 	        
 	    } catch (Exception e) {
 	    	e.printStackTrace();

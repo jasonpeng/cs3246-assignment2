@@ -93,9 +93,11 @@ public class SobelOperator implements FeatureExtractor {
 		
 		for (int i=0; i < mSizeX; i++) {
 			for (int j=0; j < mSizeY; j++) {
-				int qG = (int) (mGradient[i][j] * 8); // 0..7
-				int qD = (int) ((mDirection[i][j] + Math.PI) / (2*Math.PI) * 8); // 0..7
+				int qG = (int) Math.floor(mGradient[i][j] * 8); // 0..7
+				int qD = (int) Math.floor((mDirection[i][j] + Math.PI) / (2*Math.PI) * 8); // 0..7
+				//System.out.println("qG: " + qG + " qD: " + qD);
 				int index = qG + 8 * qD;
+				index = (index >= 64) ? 63 : index;
 				mFeature[index] += 1;
 				if (mFeature[index] > maxQ) {
 					maxQ = mFeature[index];
@@ -104,9 +106,7 @@ public class SobelOperator implements FeatureExtractor {
 		}
 			
 		for (int k=0; k < 64; k++) {
-			if (mFeature[k] > maxQ) {
-				mFeature[k] = mFeature[k] / maxQ;
-			}
+			mFeature[k] = mFeature[k] / maxQ;
 		}
 	}
 	
@@ -125,11 +125,6 @@ public class SobelOperator implements FeatureExtractor {
 	public double[][] getDirection() {
 		return mDirection;
 	}
-	
-	public double computeSimilarity(SobelOperator o){
-		double similarity = 0;
-		return similarity;
-	}
 
 	@Override
 	public double[] getFeature(BufferedImage bi) {
@@ -145,9 +140,8 @@ public class SobelOperator implements FeatureExtractor {
 	}
 
 	@Override
-	public double computeSimilarity(double[] document, Similarity sim) {
-		// TODO Auto-generated method stub
-		return 0;
+	public double computeSimilarity(double[] feature, Similarity sim) {
+		return sim.compute(feature, mFeature);
 	}
 
 }
