@@ -1,4 +1,4 @@
-package cs3246.a2.sample;
+package cs3246.a2;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -10,7 +10,9 @@ import java.util.HashMap;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 
-public class ColorCoherenceVector {
+import cs3246.a2.sample.Document;
+
+public class ColorCoherenceVector implements FeatureExtractor{
 
 	public static BufferedImage img;
 	public static int[] originalImage;
@@ -20,7 +22,10 @@ public class ColorCoherenceVector {
 	public static double[] alpha;
 	public static double[] beta;
 	private static final int NUM_OF_FILES = 30;
+	private static final double u = 0.9;
 	private static final String FILE_PATH = "./../image/";
+	private static final String FILE_UPLOAD_PATH = "./server/uploads/";
+
 	
 	/**
 	 * We first blur the image slightly by replacing pixel values with the average value in a small local neighborhood
@@ -180,8 +185,12 @@ public class ColorCoherenceVector {
 	}
 	
 	public static void computeCCV(String fileName) throws IOException{
-
-        BufferedImage imgsrc = ImageIO.read(new File(fileName));
+		BufferedImage imgsrc = ImageIO.read(new File(fileName));
+		computeCCV(imgsrc);
+	}
+	
+	public static void computeCCV(BufferedImage imgsrc) throws IOException{
+		
         int w = imgsrc.getWidth();
         int h = imgsrc.getHeight();
         
@@ -284,14 +293,21 @@ public class ColorCoherenceVector {
 	}
 	
 	public static double similarityMeasure(double[] alphaQuery, double[] alphaDoc, double[] betaQuery, double[] betaDoc){
+		double alphaSim = computeNormalizedSimilarity(alphaQuery, alphaDoc);
+		double betaSim = computeNormalizedSimilarity(betaQuery, betaDoc);
+		System.out.println("Alpha and Beta: " + alphaSim + " " + betaSim);
+		return u * alphaSim + (1 - u) * betaSim;
+	}
+	
+	public static double computeNormalizedSimilarity(double[] arr1, double[] arr2){
 		double result = 0;
 		
-		for(int i = 0; i < alphaQuery.length; i++){
-			if(alphaQuery[i] == 0 && alphaQuery[i] == 0) continue;
+		for(int i = 0; i < arr1.length; i++){
+			if(arr1[i] == 0 && arr1[i] == 0) continue;
 			
-			double difference = Math.abs( alphaQuery[i] - alphaDoc[i] );
-			double max = (alphaQuery[i] > alphaDoc[i]) ? alphaQuery[i] : alphaDoc[i];
-			result += alphaQuery[i] * (1 - difference / max );
+			double difference = Math.abs( arr1[i] - arr2[i] );
+			double max = (arr1[i] > arr2[i]) ? arr1[i] : arr2[i];
+			result += arr1[i] * (1 - difference / max );
 	    }
 		
 		return result;
@@ -331,6 +347,25 @@ public class ColorCoherenceVector {
     	return results;
     }
 	
+	@Override
+	public double[] getFeature(BufferedImage bi) {
+		try{
+			computeCCV(bi);
+		} catch (Exception e){
+			System.out.println("Error when getFeature from ColorCoherenceVector");
+			e.printStackTrace();
+		}
+		double[] result = new double[128];
+		
+		for(int i = 0; i < 64; i++){
+			result[i] = alpha[i];
+		}
+		for(int i = 64; i < 128; i++){
+			result[i] = beta[i];
+		}
+		return result;
+	}
+	
     public static void main(String[] args) throws IOException{
     	
 //    	computeCCV(FILE_PATH + "query1.jpg");
@@ -344,11 +379,11 @@ public class ColorCoherenceVector {
 //    	double result = similarityMeasure(alpha1, alpha2, beta1, beta2);
 //    	System.out.println("Result is: " + result);
     	
-//    	String[] results = new String[NUM_OF_FILES];
-//    	results = findSimilarResults(FILE_PATH + "query1.jpg");
-//    	
-//    	for (int i = 0; i < NUM_OF_FILES - 1; i++){
-//    		System.out.println(results[i]);
-//    	}
+    	String[] results = new String[NUM_OF_FILES];
+    	results = findSimilarResults(FILE_PATH + "query1.jpg");
+    	
+    	for (int i = 0; i < NUM_OF_FILES - 1; i++){
+    		System.out.println(results[i]);
+    	}
     }
 }
