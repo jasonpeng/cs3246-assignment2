@@ -10,7 +10,7 @@ import java.util.HashMap;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 
-public class ColorCoherenceVectorFrame {
+public class ColorCoherenceVector {
 
 	public static BufferedImage img;
 	public static int[] originalImage;
