@@ -22,11 +22,11 @@ public class Document implements Comparable<Document> {
 	public int compareTo(Document another) {	
 		double difference = this.score - another.getScore();
 		if (difference > 0){
-			return 1;
+			return -1;
 		} else if (difference == 0){
 			return 0;
 		} else{
-			return -1;
+			return 1;
 		}
 	}
 
