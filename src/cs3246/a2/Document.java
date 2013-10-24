@@ -1,4 +1,4 @@
-package cs3246.a2.sample;
+package cs3246.a2;
 
 public class Document implements Comparable<Document> {
 	

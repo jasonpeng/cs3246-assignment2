@@ -12,9 +12,8 @@ public class SobelOperatorTest {
 	public static void main(String[] args) {
 		try {
 			BufferedImage image = ImageIO.read(new File("image/test.jpg"));
-			SobelOperator sobel = new SobelOperator(image);
-			sobel.compute();
-			sobel.normalizeGradient();
+			SobelOperator sobel = new SobelOperator();
+			sobel.getFeature(image);
 			double[][] gradient = sobel.getGradient();
 			int x = sobel.getSizeX();
 			int y = sobel.getSizeY();

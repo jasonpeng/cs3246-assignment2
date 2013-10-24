@@ -11,7 +11,7 @@ import java.lang.Math;
  * 
  */
 
-public class SobelOperator {
+public class SobelOperator implements FeatureExtractor {
 	private BufferedImage mImage;
 	private int mSizeX;
 	private int mSizeY;
@@ -30,10 +30,8 @@ public class SobelOperator {
 	 * @param image
 	 *            the RGB image to process
 	 */
-	public SobelOperator(BufferedImage image) {
-		this.mImage = image;
-		this.mSizeX = this.mImage.getWidth();
-		this.mSizeY = this.mImage.getHeight();
+	public SobelOperator() {
+
 	}
 
 	/**
@@ -91,12 +89,23 @@ public class SobelOperator {
 	
 	public void quantize() {
 		mFeature = new double[64];
+		double maxQ = 0;
 		
 		for (int i=0; i < mSizeX; i++) {
 			for (int j=0; j < mSizeY; j++) {
 				int qG = (int) (mGradient[i][j] * 8); // 0..7
 				int qD = (int) ((mDirection[i][j] + Math.PI) / (2*Math.PI) * 8); // 0..7
-				mFeature[qG + 8 * qD] ++; 
+				int index = qG + 8 * qD;
+				mFeature[index] += 1;
+				if (mFeature[index] > maxQ) {
+					maxQ = mFeature[index];
+				}
+			}
+		}
+			
+		for (int k=0; k < 64; k++) {
+			if (mFeature[k] > maxQ) {
+				mFeature[k] = mFeature[k] / maxQ;
 			}
 		}
 	}
@@ -121,8 +130,17 @@ public class SobelOperator {
 		double similarity = 0;
 		return similarity;
 	}
-	
-	public double[] getFeature() {
+
+	@Override
+	public double[] getFeature(BufferedImage bi) {
+		this.mImage = bi;
+		this.mSizeX = this.mImage.getWidth();
+		this.mSizeY = this.mImage.getHeight();
+		
+		compute();
+		normalizeGradient();
+		quantize();
+		
 		return mFeature;
 	}
 

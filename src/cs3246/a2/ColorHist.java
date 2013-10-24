@@ -1,4 +1,4 @@
-package cs3246.a2.sample;
+package cs3246.a2;
 
 import java.awt.Font;
 import java.awt.GridLayout;
@@ -17,8 +17,10 @@ import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+
+import cs3246.a2.sample.Histogram;
   
-public class ColorHist extends JFrame { 
+public class ColorHist extends JFrame implements FeatureExtractor{ 
     private JButton imageField1; // button to select the image 1  
     private JButton imageField2; // button to select the image 2 
       
@@ -47,8 +49,13 @@ public class ColorHist extends JFrame {
     private Histogram hist2; 
       
     public ColorHist() { 
-        basePath = "E:\\workspace\\ImageSearchFramework\\"; // change it when necessary 
-          
+        
+    } 
+      
+    public void init() { 
+    	
+    	basePath = "E:\\workspace\\ImageSearchFramework\\"; // change it when necessary 
+        
         imageField1 = new JButton("Choose image 1"); 
         imageField2 = new JButton("Choose image 2"); 
           
@@ -68,10 +75,6 @@ public class ColorHist extends JFrame {
         setSize(1200,600); 
           
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); 
-        init(); 
-    } 
-      
-    public void init() { 
           
 /*      imagePanel.setLayout(new GridLayout(3,2)); 
           
@@ -194,9 +197,34 @@ public class ColorHist extends JFrame {
         double[] hist1 = getHist(buffered1); 
         double[] hist2 = getHist(buffered2); 
           
-        double distance = calculateDistance(hist1, hist2); 
-        return 1-distance; 
+        //double distance = calculateDistance(hist1, hist2); 
+        //return 1-distance; 
+        return computeSimilarity(hist1, hist2);
+    }
+    
+    public double computeSimilarity(double[] array1, double[] array2) 
+    { 
+        double Sum = 0.0; 
+        for(int i = 0; i < array1.length; i++) { 
+        	double distance = Math.abs(array1[i] - array2[i]);
+        	double max = array1[i] > array2[i] ? array1[i] : array2[i];
+        	if (max == 0){
+        		continue;
+        	}
+        	Sum += (array1[i] * ( 1 - distance / max)); 
+        } 
+        return Sum; 
     } 
+    
+    public double calculateDistance(double[] array1, double[] array2) 
+    { 
+        // Euclidean distance 
+        double Sum = 0.0; 
+        for(int i = 0; i < array1.length; i++) { 
+           Sum = Sum + Math.pow((array1[i]-array2[i]),2.0); 
+        } 
+        return Math.sqrt(Sum); 
+    }
       
     public double[] getHist(BufferedImage image) { 
         int imHeight = image.getHeight(); 
@@ -230,18 +258,13 @@ public class ColorHist extends JFrame {
         return bins; 
     } 
       
-    public double calculateDistance(double[] array1, double[] array2) 
-    { 
-        // Euclidean distance 
-        double Sum = 0.0; 
-        for(int i = 0; i < array1.length; i++) { 
-           Sum = Sum + Math.pow((array1[i]-array2[i]),2.0); 
-        } 
-        return Math.sqrt(Sum); 
-    } 
-      
-      
     public static void main(String[] args) { 
         ColorHist example = new ColorHist(); 
-    } 
+        example.init();
+    }
+
+	@Override
+	public double[] getFeature(BufferedImage bi) {
+		return getHist(bi);
+	} 
 } 
