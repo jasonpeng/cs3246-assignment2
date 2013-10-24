@@ -19,7 +19,6 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
   
 public class ColorHist extends JFrame { 
-  
     private JButton imageField1; // button to select the image 1  
     private JButton imageField2; // button to select the image 2 
       
