@@ -10,33 +10,36 @@ import cs3246.a2.Util;
 public class GenerateSimilarityMatrix {
 
 	public static void main(String[] args) {
-		BufferedImage[] yImages = new BufferedImage[64];
+		double[][] yImages = new double[64][3];
 		double[][] diff = new double[64][64];
 		double[][] sim = new double[64][64];
 		
+		double m[][] = { 
+				{ 0.2989f,	0.5866f, 	0.1145f },
+				{ -0.1687f, -0.3312f, 	0.5000f },
+				{ 0.5000f, 	-0.4183f, 	-0.0816f }
+				};
+		
 		for (int i=0; i<64; i++) {
-			int rgb;
 			int r, g, b;
 			r = (i & 48) << 6;
 			g = (i & 12) << 6;
 			b = (i & 3)  << 6;
-			rgb = (r << 16) | (g << 8) | b;
-			BufferedImage bi = new BufferedImage(1, 1, BufferedImage.TYPE_INT_RGB);
-			bi.setRGB(0, 0, rgb);
-			yImages[i] = Util.RGBToYCbCr(bi);
+			
+			yImages[i][0] = r*m[0][0] + g*m[0][1] + b*m[0][2];
+			yImages[i][1] = r*m[1][0] + g*m[1][1] + b*m[1][2];
+			yImages[i][2] = r*m[2][0] + g*m[2][1] + b*m[2][2];
 		}
 		
 		double maxDiff = 0;
 		for (int i=0; i<64; i++) {
 			for (int j=0; j<64; j++) {
-				Raster raster1 = yImages[i].getRaster();
-				Raster raster2 = yImages[j].getRaster();
-				int y1 = raster1.getSample(0, 0, 0);
-				int y2 = raster2.getSample(0, 0, 0);
-				int cb1 = raster1.getSample(0, 0, 1);
-				int cb2 = raster2.getSample(0, 0, 1);
-				int cr1 = raster1.getSample(0, 0, 2);
-				int cr2 = raster2.getSample(0, 0, 2);
+				double y1 = yImages[i][0];
+				double y2 = yImages[j][0];
+				double cb1 = yImages[i][1];
+				double cb2 = yImages[j][1];
+				double cr1 = yImages[i][2];
+				double cr2 = yImages[j][2];
 				
 				double sum = 1.4*sqr(y1-y2) + 0.8*sqr(cb1-cb2) + 0.8*(cr1-cr2);
 				if (sum < 0) {
