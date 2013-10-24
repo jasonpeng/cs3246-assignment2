@@ -19,6 +19,8 @@ public class ColorCoherenceVectorFrame {
 	public static int numOfDifferentAreas;
 	public static double[] alpha;
 	public static double[] beta;
+	private static final int NUM_OF_FILES = 30;
+	private static final String FILE_PATH = "./../image/";
 	
 	/**
 	 * We first blur the image slightly by replacing pixel values with the average value in a small local neighborhood
@@ -210,7 +212,7 @@ public class ColorCoherenceVectorFrame {
         	if(alpha[i] == 0 && beta[i] == 0) continue;
         	alpha[i] /= h * w / 10000;
         	beta[i] /= h * w / 10000;
-        	System.out.printf("%d (%3f, %3f)%n", i, alpha[i], beta[i]);
+        	//System.out.printf("%d (%3f, %3f)%n", i, alpha[i], beta[i]);
         }
 
 	}
@@ -302,27 +304,19 @@ public class ColorCoherenceVectorFrame {
     	double[] alpha1 = alpha;
     	double[] beta1 = beta;
     	
-    	for (int i = 1; i <= 5; i++){
-    		
-    		if (i == 5 || i == 6 || i == 243){
-    			//continue;
-    		}
-    		
-    		String newName = "./image/" + i + ".jpg";
-    		
-    		System.out.println("Processing image: " + i);
+    	for (int i = 1; i <= NUM_OF_FILES; i++){
 
-    		
+    		String newName = FILE_PATH + i + ".jpg";
     		if (fileName.equals(newName)){
     			continue;
     		}
-    		
+    		System.out.println("Processing image: " + i);
+
     		computeCCV(newName);
         	double[] alpha2 = alpha;
         	double[] beta2 = beta;
         	
     		double result = similarityMeasure(alpha1, alpha2, beta1, beta2);
-    		
     		Document doc = new Document(newName, result);
     		list.add(doc);
     	}
@@ -339,24 +333,22 @@ public class ColorCoherenceVectorFrame {
 	
     public static void main(String[] args) throws IOException{
     	
-    	computeCCV("./image/5.jpg");
-    	double[] alpha1 = alpha;
-    	double[] beta1 = beta;
-    	
-    	computeCCV("./image/1.jpg");
-    	double[] alpha2 = alpha;
-    	double[] beta2 = beta;
-    	
-    	double result = similarityMeasure(alpha1, alpha2, beta1, beta2);
-    	System.out.println("Result is: " + result);
-    	
-//    	String[] results = new String[400];
-//    	results = findSimilarResults("./image/5.jpg");
+//    	computeCCV(FILE_PATH + "query1.jpg");
+//    	double[] alpha1 = alpha;
+//    	double[] beta1 = beta;
 //    	
-//    	for (int i = 0; i < 400; i++){
+//    	computeCCV(FILE_PATH + "15.jpg");
+//    	double[] alpha2 = alpha;
+//    	double[] beta2 = beta;
+//    	
+//    	double result = similarityMeasure(alpha1, alpha2, beta1, beta2);
+//    	System.out.println("Result is: " + result);
+    	
+//    	String[] results = new String[NUM_OF_FILES];
+//    	results = findSimilarResults(FILE_PATH + "query1.jpg");
+//    	
+//    	for (int i = 0; i < NUM_OF_FILES - 1; i++){
 //    		System.out.println(results[i]);
 //    	}
-//    	
-//    	// test("./image/test2.jpg");
     }
 }
