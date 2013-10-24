@@ -1,0 +1,102 @@
+<!DOCTYPE HTML>
+<html lan="en">
+	<head>
+		<link rel="stylesheet" type="text/css" href="./libs/css/bootstrap.css"/>
+		<script type="text/javascript" src="./libs/jquery-1.10.2.min.js"></script>
+		<script src="http://malsup.github.com/jquery.form.js"></script> 
+		<script type="text/javascript" src="./libs/jquery-ui.js"></script>
+		<script type="text/javascript">
+
+			var PATH_TO_IMAGE_FOLDER = "./Data/Dataset/";
+			$(document).ready(function(){
+				$("#imgInp").change(function(){
+					readURL(this);
+				});	
+
+				$('#form1').ajaxForm({
+					success: function (result) {
+						// console.log(result);
+						displayImages(resulrt);
+					}
+				});
+
+				$("#rf-btn").click(function(){
+					var checkboxes = $("input[type='checkbox']:checked");
+					var rfs=[];
+					for(var i = 0; i < checkboxes.length; i++){
+						rfs[i] = checkboxes[i].value;
+					}
+					$.ajax({
+						type: 	"POST",
+						url: 	"/rf",
+						data: 	{relevant:rfs},
+						success: function(result){
+							displayImages(result);
+						} 
+					});
+				});
+
+            }); 
+	
+			function readURL(input) {
+				if (input.files && input.files[0]) {
+					var reader = new FileReader();
+					reader.onload = function (e) {
+						$('#previewImage').attr('src', e.target.result);
+						$('#previewImage').css("width", 300);
+						$('#previewImage').css("display", "block");
+					}
+					reader.readAsDataURL(input.files[0]);
+				}
+			}
+
+			function displayImages(images){
+				$('tbody').remove();
+				if (images == []){
+				}
+				else{
+					var table_images = $("#table_images");
+					var numOfCol = 5;
+					for(i = 0; i <= (images.length-1)/numOfCol; i++){
+						var tr = $('<tr'+" col="+i+'/>');
+						for(j = i*numOfCol; j<(i+1)*numOfCol;j++){
+							if(j<images.length){
+								var image = images[j];
+								var td = $("<td width='220' style='vertical-align : bottom'></td>");
+								console.log(PATH_TO_IMAGE_FOLDER+image);
+								var img = $("<img src='"+PATH_TO_IMAGE_FOLDER+image+".jpg' width = '200'/>");
+								var div= $('<form><div class="checkbox" ><label><input type="checkbox" value="'+image+'"> Relevant</label></div></form>');;
+								tr.append(td);
+								td.append(img);
+								td.append(div);
+							}
+						}
+						$("#table_images").append(tr);
+					}
+				}
+			}
+		</script>
+		
+	</head>
+	<body>
+		<section id="manuScreen" class="container">
+			    <form  method="post" action="/upload" enctype="multipart/form-data" id="form1" role="form">
+			    	<p><input type='file' id="imgInp" name="image" /></p>
+			    	<p><input type="submit" value="Search" class="btn btn-default"/></p>
+			    </form>
+			    <img id="previewImage" src="#" style="display:none" class="img-responsive" alt="your image" />
+			    <table class = "table_books" id="table_images">
+
+				</table>
+				<p>
+					<button type="button" class="btn btn-primary" id="rf-btn">RF</button>
+				</p>
+
+        	<div id="footer" >
+        	 <h4>&copy; CS3246 AY1314</h4>
+        	</div> 
+		</section>
+	
+	</body>
+
+</html>
