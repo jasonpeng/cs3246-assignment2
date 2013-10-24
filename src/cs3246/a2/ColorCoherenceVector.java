@@ -10,7 +10,7 @@ import java.util.HashMap;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 
-import cs3246.a2.sample.Document;
+import cs3246.a2.Document;
 
 public class ColorCoherenceVector implements FeatureExtractor{
 
@@ -190,7 +190,8 @@ public class ColorCoherenceVector implements FeatureExtractor{
 	}
 	
 	public static void computeCCV(BufferedImage imgsrc) throws IOException{
-		
+
+        
         int w = imgsrc.getWidth();
         int h = imgsrc.getHeight();
         

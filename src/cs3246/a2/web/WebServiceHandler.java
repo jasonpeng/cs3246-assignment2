@@ -6,6 +6,7 @@ import java.io.IOException;
 
 import javax.imageio.ImageIO;
 
+import cs3246.a2.ColorCoherenceVector;
 import cs3246.a2.ColorHist;
 
 public class WebServiceHandler {
@@ -21,10 +22,13 @@ public class WebServiceHandler {
 		BufferedImage bi = ImageIO.read(new File(IMAGE_UPLOAD_PATH + fileName)); 
 		
 		ColorHist hist = new ColorHist();
-		double[] histogramResult = hist.getHist(bi);
+		double[] histogramResult = hist.getFeature(bi);
 		
 		
-		double[] 
+		//double[] edgeDirectionResult = 
+		
+		ColorCoherenceVector ccv = new ColorCoherenceVector();
+		double[] ccvResult = ccv.getFeature(bi);
 		 
 		return results;
 	}
