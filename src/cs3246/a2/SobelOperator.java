@@ -18,6 +18,7 @@ public class SobelOperator {
 	private double[][] mGradient;
 	private double mGradientMax;
 	private double[][] mDirection;
+	private double[] mFeature;
 
 	private static final int[][] KERNEL_X = new int[][] { { 1, 0, -1 },
 			{ 2, 0, -2 }, { 1, 0, -1 } };
@@ -88,6 +89,18 @@ public class SobelOperator {
 		}
 	}
 	
+	public void quantize() {
+		mFeature = new double[64];
+		
+		for (int i=0; i < mSizeX; i++) {
+			for (int j=0; j < mSizeY; j++) {
+				int qG = (int) (mGradient[i][j] * 8); // 0..7
+				int qD = (int) ((mDirection[i][j] + Math.PI) / (2*Math.PI) * 8); // 0..7
+				mFeature[qG + 8 * qD] ++; 
+			}
+		}
+	}
+	
 	public int getSizeX() {
 		return mSizeX;
 	}
@@ -102,6 +115,15 @@ public class SobelOperator {
 
 	public double[][] getDirection() {
 		return mDirection;
+	}
+	
+	public double computeSimilarity(SobelOperator o){
+		double similarity = 0;
+		return similarity;
+	}
+	
+	public double[] getFeature() {
+		return mFeature;
 	}
 
 }
