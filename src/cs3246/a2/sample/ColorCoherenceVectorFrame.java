@@ -3,6 +3,9 @@ package cs3246.a2.sample;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -14,8 +17,8 @@ public class ColorCoherenceVectorFrame {
 	public static int[] currentImage;
 	public static int[][]  colorTagged;
 	public static int numOfDifferentAreas;
-	public static int[] alpha;
-	public static int[] beta;
+	public static double[] alpha;
+	public static double[] beta;
 	
 	/**
 	 * We first blur the image slightly by replacing pixel values with the average value in a small local neighborhood
@@ -160,8 +163,8 @@ public class ColorCoherenceVectorFrame {
             }
         }
         
-        alpha = new int[64];
-        beta = new int[64];
+        alpha = new double[64];
+        beta = new double[64];
         
         for(int i = 0; i < numOfDifferentAreas; ++i){
             int d = color[i];
@@ -202,11 +205,14 @@ public class ColorCoherenceVectorFrame {
         // Aggregate
         computeCoherence(w, h);
         
-        // Display
-        for(int i = 0; i < alpha.length; ++i){
-            if(alpha[i] == 0 && beta[i] == 0) continue;
-            System.out.printf("%2d (%3d, %3d)%n", i, alpha[i], beta[i]);
+        // Normalize
+        for (int i = 0; i < alpha.length; ++i){
+        	if(alpha[i] == 0 && beta[i] == 0) continue;
+        	alpha[i] /= h * w / 10000;
+        	beta[i] /= h * w / 10000;
+        	System.out.printf("%d (%3f, %3f)%n", i, alpha[i], beta[i]);
         }
+
 	}
 	
 	private static void test(String fileName) throws IOException{
@@ -228,7 +234,7 @@ public class ColorCoherenceVectorFrame {
       
       // Size Normalization
       
-      int limit = 200;
+      int limit = 400;
       if(w < h){
           w = w * limit / h;
           h = limit;
@@ -274,12 +280,83 @@ public class ColorCoherenceVectorFrame {
 
       f.setVisible(true);
 	}
+	
+	public static double similarityMeasure(double[] alphaQuery, double[] alphaDoc, double[] betaQuery, double[] betaDoc){
+		double result = 0;
 		
+		for(int i = 0; i < alphaQuery.length; i++){
+			if(alphaQuery[i] == 0 && alphaQuery[i] == 0) continue;
+			
+			double difference = Math.abs( alphaQuery[i] - alphaDoc[i] );
+			double max = (alphaQuery[i] > alphaDoc[i]) ? alphaQuery[i] : alphaDoc[i];
+			result += alphaQuery[i] * (1 - difference / max );
+	    }
+		
+		return result;
+	}
+	
+	public static String[] findSimilarResults(String fileName) throws IOException{
+    	ArrayList<Document> list = new ArrayList<Document>();
+    	
+    	computeCCV(fileName);
+    	double[] alpha1 = alpha;
+    	double[] beta1 = beta;
+    	
+    	for (int i = 1; i <= 5; i++){
+    		
+    		if (i == 5 || i == 6 || i == 243){
+    			//continue;
+    		}
+    		
+    		String newName = "./image/" + i + ".jpg";
+    		
+    		System.out.println("Processing image: " + i);
+
+    		
+    		if (fileName.equals(newName)){
+    			continue;
+    		}
+    		
+    		computeCCV(newName);
+        	double[] alpha2 = alpha;
+        	double[] beta2 = beta;
+        	
+    		double result = similarityMeasure(alpha1, alpha2, beta1, beta2);
+    		
+    		Document doc = new Document(newName, result);
+    		list.add(doc);
+    	}
+    	
+		Collections.sort(list);
+    	
+		String[] results = new String[list.size()];
+		for ( int i = 0; i < list.size(); i++){
+			results[i] = list.get(i).getFileName();
+		}
+		
+    	return results;
+    }
 	
     public static void main(String[] args) throws IOException{
     	
-    	computeCCV("./image/test2.jpg");
+    	computeCCV("./image/5.jpg");
+    	double[] alpha1 = alpha;
+    	double[] beta1 = beta;
     	
-    	//test("./image/test2.jpg");
+    	computeCCV("./image/1.jpg");
+    	double[] alpha2 = alpha;
+    	double[] beta2 = beta;
+    	
+    	double result = similarityMeasure(alpha1, alpha2, beta1, beta2);
+    	System.out.println("Result is: " + result);
+    	
+//    	String[] results = new String[400];
+//    	results = findSimilarResults("./image/5.jpg");
+//    	
+//    	for (int i = 0; i < 400; i++){
+//    		System.out.println(results[i]);
+//    	}
+//    	
+//    	// test("./image/test2.jpg");
     }
 }
