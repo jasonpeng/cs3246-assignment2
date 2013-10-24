@@ -9,7 +9,7 @@ Set Up:
 
 1. Create a folder called "uploaded". The front end will upload the new query photo to this folder: /uploaded/
 2. The database images should be stored in: /image/
-3. Generate index file by running the main function in GenerateImageIndex Class, with -Xmx4g as VirtualMachine parameter. The indexed file is named colorsimilarity.txt and will be stored in: /
+3. Generate index file by running the main function in GenerateImageIndex Class, with -Xmx4g as VM (VirtualMachine) parameter. The auto-generated indexe file is named colorsimilarity.txt and will be stored in: / (Refer here for VM parameter in eclipse: http://help.eclipse.org/indigo/index.jsp?topic=%2Forg.eclipse.pde.doc.user%2Fguide%2Ftools%2Flaunchers%2Farguments.htm)
 
 Run: 
 
