@@ -125,11 +125,6 @@ public class SobelOperator implements FeatureExtractor {
 	public double[][] getDirection() {
 		return mDirection;
 	}
-	
-	public double computeSimilarity(SobelOperator o){
-		double similarity = 0;
-		return similarity;
-	}
 
 	@Override
 	public double[] getFeature(BufferedImage bi) {
@@ -145,9 +140,8 @@ public class SobelOperator implements FeatureExtractor {
 	}
 
 	@Override
-	public double computeSimilarity(double[] document, Similarity sim) {
-		// TODO Auto-generated method stub
-		return 0;
+	public double computeSimilarity(double[] feature, Similarity sim) {
+		return sim.compute(feature, mFeature);
 	}
 
 }
