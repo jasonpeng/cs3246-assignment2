@@ -25,6 +25,9 @@ public class WebServiceHandler {
 	private static final String IMAGE_PATH = "./image/";
 	private static final String IMAGE_UPLOAD_PATH = "./";
 	private static final int NUM_OF_FILES = 400;
+	private static final double weightHist = 0.5;
+	private static final double weightEdge = 0.25;
+	private static final double weightCCV = 0.25;
 	
 	public static void main(String[] args) throws IOException{
 					
@@ -61,9 +64,13 @@ public class WebServiceHandler {
 			double scoreEdge = edge.computeSimilarity(similarityEdge, nSim);
 			double scoreCCV = ccv.computeSimilarity(similarityCCV, nSim);
 			
-			double finalScore = scoreHist * 1.5 + scoreEdge / 10 + scoreCCV * 200;
+			double normalizedScoreHist = scoreHist * 1;
+			double normalizedScoreEdge = scoreEdge / 10;
+			double normalizedScoreCCV = scoreCCV * 200;
 			
-			// System.out.println("hist, edge, score" + scoreHist + " " + scoreEdge + " " + scoreCCV);
+			double finalScore = normalizedScoreHist * weightHist + normalizedScoreEdge * weightEdge + normalizedScoreCCV * weightCCV;
+			
+			// System.out.println("Final, hist, edge, score\t" + finalScore + "\t\t" + normalizedScoreHist + "\t\t" + normalizedScoreEdge + "\t\t" + normalizedScoreCCV);
 			
 			Document doc = new Document(image.getFilename(), finalScore);
     		list.add(doc);
