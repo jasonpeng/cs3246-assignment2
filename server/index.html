@@ -7,7 +7,8 @@
 		<script type="text/javascript" src="./libs/jquery-ui.js"></script>
 		<script type="text/javascript">
 
-			var PATH_TO_IMAGE_FOLDER = "./Data/Dataset/";
+			var PATH_TO_IMAGE_FOLDER = "./";
+			var DEBUG;
 			$(document).ready(function(){
 				$("#imgInp").change(function(){
 					readURL(this);
@@ -15,8 +16,9 @@
 
 				$('#form1').ajaxForm({
 					success: function (result) {
-						// console.log(result);
-						displayImages(resulrt);
+						DEBUG = result;
+						console.log(result);
+						displayImages(JSON.parse(result.images));
 					}
 				});
 
@@ -31,7 +33,7 @@
 						url: 	"/rf",
 						data: 	{relevant:rfs},
 						success: function(result){
-							displayImages(result);
+							displayImages(JSON.parse(result.images));
 						} 
 					});
 				});

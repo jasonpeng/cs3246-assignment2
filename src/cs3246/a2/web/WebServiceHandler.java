@@ -23,12 +23,12 @@ public class WebServiceHandler {
 	
 	private static final int NUM_OF_RESULTS_RETURNED = 20;
 	private static final String IMAGE_PATH = "./image/";
-	private static final String IMAGE_UPLOAD_PATH = "./uploaded/";
+	private static final String IMAGE_UPLOAD_PATH = "./upload/";
 	private static final int NUM_OF_FILES = 400;
 	
-	public static String[] query(String fileName) throws IOException{
+	public static void main(String[] args) throws IOException{
 					
-		BufferedImage bi = ImageIO.read(new File(IMAGE_UPLOAD_PATH + fileName)); 
+		BufferedImage bi = ImageIO.read(new File(IMAGE_UPLOAD_PATH + args[0])); 
 		
 		// Extract features of the query and create query classes:
 		ColorHist hist = new ColorHist();
@@ -72,10 +72,16 @@ public class WebServiceHandler {
     	
 		String[] results = new String[list.size()];
 		
+		System.out.print("{\"length\":"+list.size());
 		for ( int i = 0; i < list.size(); i++){
-			results[i] = list.get(i).getFileName();
+//			results[i] = list.get(i).getFileName();
+//			if (i==0){
+//				System.out.print("\""+i+"\"");
+//				System.out.print(":"+'"'+list.get(i).getFileName()+'"');
+//			}
+//			else
+				System.out.print(", "+'"'+i+'"'+":"+'"'+list.get(i).getFileName()+'"');
 		}
-		
-		return results;
+		System.out.println("}");
 	}
 }
