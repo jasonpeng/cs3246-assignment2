@@ -81,7 +81,11 @@ public class SobelOperator implements FeatureExtractor {
 		if (mGradient != null) {			
 			for (int i=0; i < mSizeX; i++) {
 				for (int j=0; j < mSizeY; j++) {
-					mGradient[i][j] = mGradient[i][j] / mGradientMax;
+					if (mGradient[i][j] < mGradientMax * 0.2f) {
+						mGradient[i][j] = 0;
+					} else {
+						mGradient[i][j] = mGradient[i][j] / mGradientMax;
+					}
 				}
 			}
 		}
