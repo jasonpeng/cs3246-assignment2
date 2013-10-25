@@ -388,35 +388,35 @@ public class ColorCoherenceVector implements FeatureExtractor{
 	
     public static void main(String[] args) throws IOException{
     	
-//    	ColorCoherenceVector vec = new ColorCoherenceVector();
-//    	
-//    	vec.computeCCV(FILE_PATH + "1.jpg");
-//    	double[] alpha1 = vec.alpha;
-//    	double[] beta1 = vec.beta;
-//    	
-//    	ColorCoherenceVector vec2 = new ColorCoherenceVector();
-//    	double[] document = vec2.getFeature(ImageIO.read(new File(FILE_PATH + "1.jpg")));
-//    	
-//    	double alphaInDoc[] = new double[64];
-//		double betaInDoc[] = new double[64];
-//		
-//		for (int i = 0; i < 64; i++){
-//			alphaInDoc[i] = document[i];
-//		}
-//		for (int j = 64; j < 128; j++){
-//			betaInDoc[j - 64] = document[j];
-//		}
-//		
-//		double result1 = vec.similarityMeasure(alpha1, alphaInDoc, beta1, betaInDoc);
-//    	double result2 = vec.computeSimilarity(document, new NormalizedSimilarity());
-
-
     	ColorCoherenceVector vec = new ColorCoherenceVector();
-    	String[] results = new String[NUM_OF_FILES];
-    	results = vec.findSimilarResults(FILE_PATH + "query1.jpg");
     	
-    	for (int i = 0; i < NUM_OF_FILES - 1; i++){
-    		System.out.println(results[i]);
-    	}
+    	vec.computeCCV(FILE_PATH + "89.jpg");
+    	double[] alpha1 = vec.alpha;
+    	double[] beta1 = vec.beta;
+    	
+    	ColorCoherenceVector vec2 = new ColorCoherenceVector();
+    	double[] document = vec2.getFeature(ImageIO.read(new File(FILE_PATH + "89.jpg")));
+    	
+    	double alphaInDoc[] = new double[64];
+		double betaInDoc[] = new double[64];
+		
+		for (int i = 0; i < 64; i++){
+			alphaInDoc[i] = document[i];
+		}
+		for (int j = 64; j < 128; j++){
+			betaInDoc[j - 64] = document[j];
+		}
+		
+		double result1 = vec.similarityMeasure(alpha1, alphaInDoc, beta1, betaInDoc);
+    	double result2 = vec.computeSimilarity(document, new NormalizedSimilarity());
+
+
+//    	ColorCoherenceVector vec = new ColorCoherenceVector();
+//    	String[] results = new String[NUM_OF_FILES];
+//    	results = vec.findSimilarResults(FILE_PATH + "query1.jpg");
+//    	
+//    	for (int i = 0; i < NUM_OF_FILES - 1; i++){
+//    		System.out.println(results[i]);
+//    	}
     }
 }
