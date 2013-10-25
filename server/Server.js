@@ -4,12 +4,16 @@ var express    = require("express");
 var http       = require('http');
 var path       = require('path');
 var fs         = require('fs');
+var sys        = require('sys')
+var exec       = require('child_process').exec;
 var app        = express();
 var httpServer = http.createServer(app);
 httpServer.listen(port, "0.0.0.0");
 
+var response;
+
 app.use(express.bodyParser({
-	uploadDir: './uploads'
+	uploadDir: './upload'
 }));
 app.use(express.multipart());
 app.use(express.static(__dirname));
@@ -23,15 +27,26 @@ app.post("/rf", function(req, res){
 	console.log(req.body.relevant);
 });
 
+function onJavaReturn(error, stdout, stderr) {
+	console.log(stdout);
+	console.log(error);
+	console.log(stderr);
+	response.send({
+		images: stdout
+	});
+}
+
 app.post("/upload", function(req, res){
+	response = res;
 	console.log("Uploading");
 	var tempPath = req.files.image.path;
 	// var targetPath = path.resolve('./uploads/queryImage.jpg');
 	var imageName = req.files.image.name;
 	console.log(tempPath  + " " + imageName);
-	res.send({
-		images:[1,3,7,9]
-	});
+	// res.send({
+	// 	images:[1,3,7,9]
+	// });
+	exec("java -jar ImageQuery.jar 1.jpg", onJavaReturn);
 });
 
  /* serves all the static files */

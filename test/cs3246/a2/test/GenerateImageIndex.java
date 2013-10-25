@@ -20,7 +20,7 @@ public class GenerateImageIndex {
 		List<Image> images = new ArrayList<Image>();
 
 		try {
-			for (int i = 1; i <= 50; i++) {
+			for (int i = 1; i <= 400; i++) {
 				String filename = "image/" + i + ".jpg";
 				System.out.println("Indexing " + filename);
 				File file = new File(filename);
