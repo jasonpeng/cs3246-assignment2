@@ -4,7 +4,11 @@ var canRun = true;
 var counter = 1;
 
 function onJavaReturn(error, stdout, stderr) {
-  console.log(stderr);
+  if (stderr != null) {
+    console.log("Error: \n" + stderr);
+    return;
+  }
+
   var result = JSON.parse(stdout);
   var hit = 0;
   for(var j = 0; j < result.length; j++){
