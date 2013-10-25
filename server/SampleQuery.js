@@ -2,9 +2,11 @@ var sys        = require('sys')
 var exec       = require('child_process').exec;
 var canRun = true;
 var counter = 1;
+var averageF1 = 0;
+var averageCounter = 0;
 
 function onJavaReturn(error, stdout, stderr) {
-  if (stderr != null) {
+  if (error != null) {
     console.log("Error: \n" + stderr);
     return;
   }
@@ -22,11 +24,20 @@ function onJavaReturn(error, stdout, stderr) {
   var P = hit*1.0/result.length;
   var R = hit*1.0/20;
   var F1 = (2*P*R)/(P+R);
+
+  if (!isNaN(F1)) {
+    averageF1 += F1;
+    averageCounter ++;
+  }
+
   console.log(counter+"\t"+hit+"\t"+R.toFixed(3)+"\t"+P.toFixed(3)+"\t\t"+F1.toFixed(3));
 
   counter ++;
   if (counter <= 20) {
     exec("java -Xmx4g -cp " + jarFile + ":lib/gson-2.2.4.jar cs3246/a2/web/WebServiceHandler " + imagePath + "query" + counter + ".jpg " + numResult, {cwd: cwd}, onJavaReturn);
+  } else {
+    averageF1 /= averageCounter;
+    console.log("Completed. Average F1: " + averageF1);
   }
 }
 
