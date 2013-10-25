@@ -1,1 +1,0 @@
-{"mFilename":"001.jpg","mSimilarityCCV":[0.0,1.0,0.0],"mSimilarityHist":[1.0,0.0,0.0],"mSimilarityEdge":[0.0,0.0,1.0],"mTags":["tag1 tag2"],"mTagAll":"tag1 tag2"}
