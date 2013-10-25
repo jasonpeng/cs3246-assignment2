@@ -33,7 +33,7 @@ public class AdjacentSimilarity extends Similarity {
 			try {
 				S = gson.fromJson(new FileReader("colorsimilarity.txt"), double[][].class);
 			} catch (Exception e) {
-				
+				e.printStackTrace();
 			}
 			return S;
 		}
