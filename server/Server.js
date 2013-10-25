@@ -46,7 +46,7 @@ app.post("/upload", function(req, res){
 	// res.send({
 	// 	images:[1,3,7,9]
 	// });
-	exec("java -jar ImageQuery.jar 1.jpg", onJavaReturn);
+	exec("java -jar -Xmx4g ImageQuery.jar "+tempPath+" 20", onJavaReturn);
 });
 
  /* serves all the static files */

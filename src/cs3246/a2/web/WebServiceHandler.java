@@ -23,7 +23,7 @@ public class WebServiceHandler {
 	
 	private static final int NUM_OF_RESULTS_RETURNED = 20;
 	private static final String IMAGE_PATH = "./image/";
-	private static final String IMAGE_UPLOAD_PATH = "./upload/";
+	private static final String IMAGE_UPLOAD_PATH = "./";
 	private static final int NUM_OF_FILES = 400;
 	
 	public static void main(String[] args) throws IOException{

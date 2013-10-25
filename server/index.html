@@ -7,7 +7,7 @@
 		<script type="text/javascript" src="./libs/jquery-ui.js"></script>
 		<script type="text/javascript">
 
-			var PATH_TO_IMAGE_FOLDER = "./";
+			var PATH_TO_IMAGE_FOLDER = "./image/";
 			var DEBUG;
 			$(document).ready(function(){
 				$("#imgInp").change(function(){
@@ -66,8 +66,8 @@
 								var image = images[j];
 								var td = $("<td width='220' style='vertical-align : bottom'></td>");
 								console.log(PATH_TO_IMAGE_FOLDER+image);
-								var img = $("<img src='"+PATH_TO_IMAGE_FOLDER+image+".jpg' width = '200'/>");
-								var div= $('<form><div class="checkbox" ><label><input type="checkbox" value="'+image+'"> Relevant</label></div></form>');;
+								var img = $("<img src='"+PATH_TO_IMAGE_FOLDER+image+"' width = '200'/>");
+								var div= $('<form><div class="checkbox" ><label><input type="checkbox" value="'+image+'">'+image+' Relevant</label></div></form>');;
 								tr.append(td);
 								td.append(img);
 								td.append(div);
