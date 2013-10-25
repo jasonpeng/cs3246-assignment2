@@ -390,12 +390,12 @@ public class ColorCoherenceVector implements FeatureExtractor{
     	
     	ColorCoherenceVector vec = new ColorCoherenceVector();
     	
-    	vec.computeCCV(FILE_PATH + "89.jpg");
+    	vec.computeCCV(FILE_PATH + "297.png");
     	double[] alpha1 = vec.alpha;
     	double[] beta1 = vec.beta;
     	
     	ColorCoherenceVector vec2 = new ColorCoherenceVector();
-    	double[] document = vec2.getFeature(ImageIO.read(new File(FILE_PATH + "89.jpg")));
+    	double[] document = vec2.getFeature(ImageIO.read(new File(FILE_PATH + "297.png")));
     	
     	double alphaInDoc[] = new double[64];
 		double betaInDoc[] = new double[64];
@@ -409,8 +409,8 @@ public class ColorCoherenceVector implements FeatureExtractor{
 		
 		double result1 = vec.similarityMeasure(alpha1, alphaInDoc, beta1, betaInDoc);
     	double result2 = vec.computeSimilarity(document, new NormalizedSimilarity());
-
-
+    	System.out.println("Results: " + result1 + " " + result2);
+    	
 //    	ColorCoherenceVector vec = new ColorCoherenceVector();
 //    	String[] results = new String[NUM_OF_FILES];
 //    	results = vec.findSimilarResults(FILE_PATH + "query1.jpg");
