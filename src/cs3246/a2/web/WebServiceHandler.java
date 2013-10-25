@@ -29,6 +29,7 @@ public class WebServiceHandler {
 	public static void main(String[] args) throws IOException{
 					
 		BufferedImage bi = ImageIO.read(new File(IMAGE_UPLOAD_PATH + args[0])); 
+		int number	= Integer.parseInt(args[1]);
 		
 		// Extract features of the query and create query classes:
 		ColorHist hist = new ColorHist();
@@ -70,16 +71,10 @@ public class WebServiceHandler {
 		
 		Collections.sort(list);
     	
-		String[] results = new String[list.size()];
+		int size = (number < list.size())?number:list.size();
 		
-		System.out.print("{\"length\":"+list.size());
-		for ( int i = 0; i < list.size(); i++){
-//			results[i] = list.get(i).getFileName();
-//			if (i==0){
-//				System.out.print("\""+i+"\"");
-//				System.out.print(":"+'"'+list.get(i).getFileName()+'"');
-//			}
-//			else
+		System.out.print("{\"length\":"+size);
+		for ( int i = 0; i < size ; i++){
 				System.out.print(", "+'"'+i+'"'+":"+'"'+list.get(i).getFileName()+'"');
 		}
 		System.out.println("}");
