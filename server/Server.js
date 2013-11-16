@@ -39,14 +39,20 @@ function onJavaReturn(error, stdout, stderr) {
 app.post("/upload", function(req, res){
 	response = res;
 	console.log("Uploading");
-	var tempPath = req.files.image.path;
-	// var targetPath = path.resolve('./uploads/queryImage.jpg');
-	var imageName = req.files.image.name;
-	console.log(tempPath  + " " + imageName);
-	// res.send({
-	// 	images:[1,3,7,9]
-	// });
-	exec("java -jar -Xmx4g ImageQuery.jar "+tempPath+" 20", onJavaReturn);
+	if (!req.files.images == null){
+		var tempPath = req.files.image.path;
+		// var targetPath = path.resolve('./uploads/queryImage.jpg');
+		var imageName = req.files.image.name;
+		console.log(tempPath  + " " + imageName);
+		// res.send({
+		// 	images:[1,3,7,9]
+		// });
+		exec("java -jar -Xmx4g ImageQuery.jar "+tempPath+" 20", onJavaReturn);	
+	}
+	else {
+		res.send("400", {message: "No image uploaded!"});
+	}
+	
 });
 
  /* serves all the static files */
