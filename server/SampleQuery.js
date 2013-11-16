@@ -2,35 +2,55 @@ var sys        = require('sys')
 var exec       = require('child_process').exec;
 var canRun = true;
 var counter = 1;
+var averageF1 = 0;
+var averageCounter = 0;
 
 function onJavaReturn(error, stdout, stderr) {
-	
-	// console.log("./Data/ImageQuery/query"+counter+".jpg");
-	// console.log(stdout);
-	var result = JSON.parse(stdout);
-	var hit = 0;
-	for(var j = 0; j < result.length; j++){
-		var imageName = result[j];
-		var name = imageName.split(".")[0];
-		if (name > 20*(counter-1) && name <= counter*20){
-			hit++;
-		}
-	}
-	var P = hit*1.0/result.length;
-	var R = hit*1.0/20;
-	console.log(counter+"\t"+hit+"\t"+R.toFixed(2)+"\t"+P.toFixed(2)+"\t"+((2*P*R)/(P+R)).toFixed(2));
-	// console.log("query\t"+counter);
-	// console.log("Hits: \t"+ hit);
-	// console.log("Recall: \t"+ R);
-	// console.log("Precision: \t"+P);
-	// console.log("F1: \t"+(2*P*R)/(P+R));
+  if (error != null) {
+    console.log("Error: \n" + stderr);
+    return;
+  }
 
-	counter++;
-	if(counter <= 20){
-		exec("java -jar -Xmx4g ImageQuery.jar ./Data/ImageQuery/query"+counter+".jpg 20", onJavaReturn);	
-	}
+  var result = JSON.parse(stdout);
+  var hit = 0;
+  for(var j = 0; j < result.length; j++){
+    var imageName = result[j];
+    var name = imageName.split(".")[0];
+    name = parseInt(name, 10);
+    if (name > 20*(counter-1) && name <= counter*20){
+      hit++;
+    }
+  }
+  var P = hit*1.0/result.length;
+  var R = hit*1.0/20;
+  var F1 = (2*P*R)/(P+R);
+
+  if (!isNaN(F1)) {
+    averageF1 += F1;
+    averageCounter ++;
+  }
+
+  console.log(counter+"\t"+hit+"\t"+R.toFixed(3)+"\t"+P.toFixed(3)+"\t\t"+F1.toFixed(3));
+
+  counter ++;
+  if (counter <= 20) {
+    exec("java -Xmx4g -cp " + jarFile + ":lib/gson-2.2.4.jar cs3246/a2/web/WebServiceHandler " + imagePath + "query" + counter + ".jpg " + numResult, {cwd: cwd}, onJavaReturn);
+  } else {
+    averageF1 /= averageCounter;
+    console.log("Completed. Average F1: " + averageF1);
+  }
 }
 
+console.log("Running SampleQuery.js \n");
+// print process.argv
+process.argv.forEach(function(val, index, array) {
+   console.log(index + ': ' + val);
+});
 
-	console.log("Query\tHits\tRecall\tPrecision\tFi")
-		exec("java -jar -Xmx4g ImageQuery.jar ./Data/ImageQuery/query"+counter+".jpg 20", onJavaReturn);	
+var cwd = process.argv[2];
+var jarFile = process.argv[3];
+var imagePath = process.argv[4];
+var numResult = process.argv[5];
+
+console.log("Query\tHits\tRecall\tPrecision\tFi");
+exec("java -Xmx4g -cp " + jarFile + ":lib/gson-2.2.4.jar cs3246/a2/web/WebServiceHandler " + imagePath + "query" + counter + ".jpg " + numResult, {cwd: cwd}, onJavaReturn);

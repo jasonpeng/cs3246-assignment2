@@ -2,6 +2,7 @@ package cs3246.a2;
 
 import java.awt.image.BandCombineOp;
 import java.awt.image.BufferedImage;
+import java.awt.image.ColorConvertOp;
 import java.awt.image.Raster;
 import java.awt.image.WritableRaster;
 
@@ -25,5 +26,28 @@ public final class Util {
 		} else {
 			return image;
 		}
+	}
+	
+	/**
+	 * convert a BufferedImage to RGB colourspace
+	 */
+	public final static BufferedImage convertColorspace(
+			BufferedImage image,
+			int newType) {
+	 
+		try {
+			BufferedImage raw_image = image;
+			image =
+					new BufferedImage(
+							raw_image.getWidth(),
+							raw_image.getHeight(),
+							newType);
+			ColorConvertOp xformOp = new ColorConvertOp(null);
+			xformOp.filter(raw_image, image);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	 
+		return image;
 	}
 }

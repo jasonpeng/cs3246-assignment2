@@ -18,6 +18,7 @@ import cs3246.a2.Image;
 import cs3246.a2.ImageDBReader;
 import cs3246.a2.NormalizedSimilarity;
 import cs3246.a2.SobelOperator;
+import cs3246.a2.Util;
 
 public class WebServiceHandler {
 	
@@ -31,7 +32,9 @@ public class WebServiceHandler {
 	
 	public static void main(String[] args) throws IOException{
 					
-		BufferedImage bi = ImageIO.read(new File(IMAGE_UPLOAD_PATH + args[0])); 
+		BufferedImage bi = ImageIO.read(new File(IMAGE_UPLOAD_PATH + args[0]));
+		bi = Util.convertColorspace(bi, BufferedImage.TYPE_INT_RGB);
+		
 		int number	= Integer.parseInt(args[1]);
 		
 		// Extract features of the query and create query classes:

@@ -17,3 +17,9 @@ Run:
 2. The front end call the public static method: query(String fileName) in the Class WebServiceHandler.
 3. The relevent document names will be printed out using System.out.println().
 4. The front end will notice the document names and display the images.
+
+
+Running SampleQuery.js
+node server/SampleQuery.js cwdPath classpath(source dir or jar file) imagefolderPath returnResultNumber
+exmaple:
+node server/SampleQuery.js /Users/jason/cs3246/cs3246-assignment2 bin query/ 40

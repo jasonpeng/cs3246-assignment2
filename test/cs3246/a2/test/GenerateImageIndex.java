@@ -15,6 +15,7 @@ import cs3246.a2.Constant;
 import cs3246.a2.Image;
 import cs3246.a2.ImageDBWriter;
 import cs3246.a2.SobelOperator;
+import cs3246.a2.Util;
 
 public class GenerateImageIndex {
 
@@ -32,6 +33,7 @@ public class GenerateImageIndex {
 					try{
 						file = new File(IMAGE_FOLDER+filename);
 						bi = ImageIO.read(file);
+						bi = Util.convertColorspace(bi, BufferedImage.TYPE_INT_RGB);
 					} catch (IIOException e){
 						filename = i + ".png";
 						System.out.println("File cannot found. Looking for: " + filename);
