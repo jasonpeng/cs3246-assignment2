@@ -23,11 +23,11 @@
     	  	var makeActive = function(name){
     	  		for (var i in SEARCH_TABS){
     	  			if (SEARCH_TABS[i] == name){
-    	  				console.log(name);
     	  				$(SEARCH_TABS[i]).parent().addClass("active");
-    	  				console.log($(name).parent());
+    	  				$(SEARCH_TABS[i]+"Div").show();
     	  			}else{
     	  				$(SEARCH_TABS[i]).parent().removeClass("active");
+    	  				$(SEARCH_TABS[i]+"Div").hide();
     	  			}
     	  		}
     	  	}
@@ -150,12 +150,21 @@
             				</div>
             			</div>
 
-            			<div id="">	
+            			<div id="searchImageTabDiv" class="searchInputDiv">	
             				<form  method="post" action="/upload" enctype="multipart/form-data" id="form1" role="form">
             					<p><input type='file' id="imgInp" name="image" /></p>
             					<p><input type="submit" value="Search" class="btn btn-default"/></p>
             				</form>
             				<img id="previewImage" src="#" style="display:none" class="img-responsive" alt="your image" />
+            			</div>
+            			<div id="searchColorTabDiv" style="display:none" class="searchInputDiv">
+            				<p>Testing Search by color</p>
+            			</div>
+            			<div id="searchPatternTabDiv" style="display:none" class="searchInputDiv">
+            				<p>Testing Search by patternr</p>
+            			</div>
+            			<div id="searchTagTabDiv" style="display:none" class="searchInputDiv">
+            				<p>Testing Search by tag</p>
             			</div>
             	</div>
             	<div>
