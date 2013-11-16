@@ -1,119 +1,179 @@
 <!DOCTYPE HTML>
 <html lan="en">
-	<head>
-		<title>FASH -- Fast Fashion Search</title>
-		<meta name="viewport" content="width=device-width, initial-scale=1.0">
-		<link rel="stylesheet" type="text/css" href="./libs/css/bootstrap.css"/>
-		<link rel="stylesheet" type="text/css" href="./libs/css/fash.css"/>
-		<script type="text/javascript" src="./libs/jquery-1.10.2.min.js"></script>
-		<script src="http://malsup.github.com/jquery.form.js"></script> 
-		<script type="text/javascript" src="./libs/jquery-ui.js"></script>
-		<!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
-    	<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+<head>
+	<title>FASH -- Fast Fashion Search</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="stylesheet" type="text/css" href="./libs/css/bootstrap.css"/>
+	<link rel="stylesheet" type="text/css" href="./libs/css/fash.css"/>
+	<script type="text/javascript" src="./libs/jquery-1.10.2.min.js"></script>
+	<script src="http://malsup.github.com/jquery.form.js"></script> 
+	<script type="text/javascript" src="./libs/jquery-ui.js"></script>
+	<!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+	<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
     	<!--[if lt IE 9]>
     	  <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
     	  <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
-    	<![endif]-->
-		<script type="text/javascript">
+    	  <![endif]-->
+    	  <script type="text/javascript">
 
-			var PATH_TO_IMAGE_FOLDER = "./image/";
-			var DEBUG;
-			$(document).ready(function(){
-				$("#imgInp").change(function(){
-					readURL(this);
-				});	
+    	  	var PATH_TO_IMAGE_FOLDER = "./image/";
+    	  	var DEBUG;
+    	  	var SEARCH_TABS = ["#searchImageTab", "#searchColorTab", "#searchPatternTab","#searchTagTab"];
 
-				$('#form1').ajaxForm({
-					success: function (result) {
-						DEBUG = result;
-						console.log(result);
-						displayImages(JSON.parse(result.images));
-					}
-				});
+    	  	var makeActive = function(name){
+    	  		for (var i in SEARCH_TABS){
+    	  			if (SEARCH_TABS[i] == name){
+    	  				console.log(name);
+    	  				$(SEARCH_TABS[i]).parent().addClass("active");
+    	  				console.log($(name).parent());
+    	  			}else{
+    	  				$(SEARCH_TABS[i]).parent().removeClass("active");
+    	  			}
+    	  		}
+    	  	}
+    	  	$(document).ready(function(){
+    	  		$("#imgInp").change(function(){
+    	  			readURL(this);
+    	  		});	
 
-				$("#rf-btn").click(function(){
-					var checkboxes = $("input[type='checkbox']:checked");
-					var rfs=[];
-					for(var i = 0; i < checkboxes.length; i++){
-						rfs[i] = checkboxes[i].value;
-					}
-					$.ajax({
-						type: 	"POST",
-						url: 	"/rf",
-						data: 	{relevant:rfs},
-						success: function(result){
-							displayImages(JSON.parse(result.images));
-						} 
-					});
-				});
+    	  		$('#form1').ajaxForm({
+    	  			success: function (result) {
+    	  				DEBUG = result;
+    	  				console.log(result);
+    	  				displayImages(JSON.parse(result.images));
+    	  			},
+    	  			error: function (error){
+    	  				console.log(error.responseJSON);
+    	  			}
+    	  		});
 
-            }); 
-	
-			function readURL(input) {
-				if (input.files && input.files[0]) {
-					var reader = new FileReader();
-					reader.onload = function (e) {
-						$('#previewImage').attr('src', e.target.result);
-						$('#previewImage').css("width", 300);
-						$('#previewImage').css("display", "block");
-					}
-					reader.readAsDataURL(input.files[0]);
-				}
-			}
+    	  		$("#rf-btn").click(function(){
+    	  			var checkboxes = $("input[type='checkbox']:checked");
+    	  			var rfs=[];
+    	  			for(var i = 0; i < checkboxes.length; i++){
+    	  				rfs[i] = checkboxes[i].value;
+    	  			}
+    	  			$.ajax({
+    	  				type: 	"POST",
+    	  				url: 	"/rf",
+    	  				data: 	{relevant:rfs},
+    	  				success: function(result){
+    	  					displayImages(JSON.parse(result.images));
+    	  				} 
+    	  			});
+    	  		});
 
-			function displayImages(images){
-				$('tbody').remove();
-				if (images == []){
-				}
-				else{
-					var table_images = $("#table_images");
-					var numOfCol = 5;
-					for(i = 0; i <= (images.length-1)/numOfCol; i++){
-						var tr = $('<tr'+" col="+i+'/>');
-						for(j = i*numOfCol; j<(i+1)*numOfCol;j++){
-							if(j<images.length){
-								var image = images[j];
-								var td = $("<td width='220' style='vertical-align : bottom'></td>");
-								console.log(PATH_TO_IMAGE_FOLDER+image);
-								var img = $("<img src='"+PATH_TO_IMAGE_FOLDER+image+"' width = '200'/>");
-								var div= $('<form><div class="checkbox" ><label><input type="checkbox" value="'+image+'">'+image+' Relevant</label></div></form>');;
-								tr.append(td);
-								td.append(img);
-								td.append(div);
-							}
-						}
-						$("#table_images").append(tr);
-					}
-				}
-			}
-		</script>
-		
-	</head>
-	<body>
-		<h1>Search Your Fashion</h1>
-		<div id="wrap">	
-			<div id="manuScreen" class="container">
-				    <form  method="post" action="/upload" enctype="multipart/form-data" id="form1" role="form">
-				    	<p><input type='file' id="imgInp" name="image" /></p>
-				    	<p><input type="submit" value="Search" class="btn btn-default"/></p>
-				    </form>
-				    <img id="previewImage" src="#" style="display:none" class="img-responsive" alt="your image" />
-				    <table class = "table_books" id="table_images">
-	
-					</table>
-					<p>
+    	  		$("#searchImageTab").click(function(){
+    	  			makeActive("#searchImageTab");
+    	  		});
+
+    	  		$("#searchColorTab").click(function(){
+    	  			makeActive("#searchColorTab");
+    	  		});
+
+    	  		$("#searchPatternTab").click(function(){
+    	  			makeActive("#searchPatternTab");
+    	  		});
+
+    	  		$("#searchTagTab").click(function(){
+    	  			makeActive("#searchTagTab");
+    	  		});
+
+    	  	}); 
+
+    	  	function readURL(input) {
+    	  		if (input.files && input.files[0]) {
+    	  			var reader = new FileReader();
+    	  			reader.onload = function (e) {
+    	  				$('#previewImage').attr('src', e.target.result);
+    	  				$('#previewImage').css("width", 300);
+    	  				$('#previewImage').css("display", "block");
+    	  			}
+    	  			reader.readAsDataURL(input.files[0]);
+    	  		}
+    	  	}
+
+    	  	function displayImages(images){
+    	  		$('tbody').remove();
+    	  		if (images == []){
+    	  		}
+    	  		else{
+    	  			var table_images = $("#table_images");
+    	  			var numOfCol = 4;
+    	  			for(i = 0; i <= (images.length-1)/numOfCol; i++){
+    	  				var tr = $('<tr'+" col="+i+'/>');
+    	  				for(j = i*numOfCol; j<(i+1)*numOfCol;j++){
+    	  					if(j<images.length){
+    	  						var image = images[j];
+    	  						var td = $("<td width='150' style='vertical-align : bottom'></td>");
+    	  						console.log(PATH_TO_IMAGE_FOLDER+image);
+    	  						var img = $("<img src='"+PATH_TO_IMAGE_FOLDER+image+"' width = '200'/>");
+    	  						var div= $('<form><div class="checkbox" ><label><input type="checkbox" value="'+image+'">'+image+' Relevant</label></div></form>');;
+    	  						tr.append(td);
+    	  						td.append(img);
+    	  						td.append(div);
+    	  					}
+    	  				}
+    	  				$("#table_images").append(tr);
+    	  			}
+    	  		}
+    	  	}
+    	  </script>
+
+    	</head>
+    	<body>
+    		<div id="wrap">	
+    			<div id="manuScreen" class="container">
+    				<div class="page-header">
+    					<h1>Search Your Fashion</h1>
+    				</div>
+    				<div>
+    					<div class="navbar navbar-default" role="navigation">
+    						<div class="container">
+          						<div class="navbar-header">
+            						<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+              							<span class="sr-only">Toggle navigation</span>
+              							<span class="icon-bar"></span>
+              							<span class="icon-bar"></span>
+              							<span class="icon-bar"></span>
+            						</button>
+            						<a class="navbar-brand" href="#">Search Method</a>
+            					</div>
+            					<div class="collapse navbar-collapse">
+            						<ul class="nav navbar-nav">
+            							<li class="active"><a id="searchImageTab" href="#">Image</a></li>
+            							<li><a id="searchColorTab" href="#">Color</a></li>
+            							<li><a id="searchPatternTab" href="#">Pattern</a></li>
+            							<li><a id="searchTagTab" href="#">Tag</a></li>
+            						</ul>
+            					</div><!--/.nav-collapse -->
+            				</div>
+            			</div>
+
+            			<div id="">	
+            				<form  method="post" action="/upload" enctype="multipart/form-data" id="form1" role="form">
+            					<p><input type='file' id="imgInp" name="image" /></p>
+            					<p><input type="submit" value="Search" class="btn btn-default"/></p>
+            				</form>
+            				<img id="previewImage" src="#" style="display:none" class="img-responsive" alt="your image" />
+            			</div>
+            	</div>
+            	<div>
+            		<table class = "table_books" id="table_images"></table>
+            	</div>
+					<!-- <p>
 						<button type="button" class="btn btn-primary" id="rf-btn">RF</button>
-					</p>
-	
-        		
-        		<div id="footer">
-      				<div class="container">
-        				<p class="text-muted credit">&copy; CS3246 AY1314</p>
-      				</div>
-    			</div>
-			</div>
-		</div>
-	
-	</body>
+					</p> -->
 
-</html>
+				</div>
+			</div>	
+			<div id="footer">
+				<div class="container">
+					<p class="text-muted credit">&copy; CS3246 AY1314</p>
+				</div>
+			</div>
+
+
+		</body>
+
+		</html>
