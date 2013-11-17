@@ -97,5 +97,8 @@ public class WebServiceHandler {
 		}
 		
 		Collections.sort(resultList);
+		
+		Gson gson = new Gson();
+		System.out.print(gson.toJson(resultList));
 	}
 }
