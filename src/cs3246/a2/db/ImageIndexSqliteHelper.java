@@ -9,6 +9,7 @@ import java.util.List;
 import com.google.gson.Gson;
 
 import cs3246.a2.model.ImageIndex;
+import cs3246.a2.model.Product;
 
 public class ImageIndexSqliteHelper extends SqliteHelper {
 
@@ -18,6 +19,16 @@ public class ImageIndexSqliteHelper extends SqliteHelper {
 	
 	public ImageIndex getById(int id) {
 		return getByClauses("where id=" + id).get(0);
+	}
+	
+	public List<ImageIndex> getFromProducts(List<Product> products) {
+		List<Integer> ids = new ArrayList<Integer>();
+		for (Product product : products) {
+			ids.add(product.getId());
+		}
+		
+		String clauses = "where id IN (" + generateCommaSeperatedString(ids) + ")";
+		return getByClauses(clauses);
 	}
 	
 	public boolean createTable() {

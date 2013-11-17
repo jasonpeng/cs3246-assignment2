@@ -24,21 +24,19 @@ public class ProductSqliteHelper extends SqliteHelper {
 		String clauses = "where id IN (" + generateCommaSeperatedString(ids) + ")";
 		return getByClauses(clauses);
 	}
-	
-	private String generateCommaSeperatedString(List<Integer> ids) {
-		if (ids.size()==0) {
-			return "";
+
+	public List<Product> getFromCategoryName(String category) {
+		if (category.equals("dresses")) {
+			return getDresses();
+		} else if (category.equals("tops")) {
+			return getTops();
+		} else if (category.equals("bags")) {
+			return getBags();
+		} else if (category.equals("shoes")) {
+			return getShoes();
+		} else {
+			return null;
 		}
-		
-		String s = "";
-		for (int i=0; i<ids.size(); i++) {
-			s += ids.get(i).toString();
-			if (i < ids.size()-1) {
-				s += ",";
-			}
-		}
-		
-		return s;
 	}
 
 	public List<Product> getDresses() {
