@@ -41,16 +41,20 @@ app.post("/searchwithimage", function(req, res){
 	console.log("Uploading");
 	console.log(req.body);
 	if (!(req.files.image == null)){
-		var tempPath = req.files.image.path;
-		// var targetPath = path.resolve('./uploads/queryImage.jpg');
-		var imageName = req.files.image.name;
+		var tempPath          = req.files.image.path;
+		// var targetPath     = path.resolve('./uploads/queryImage.jpg');
+		var imageName         = req.files.image.name;
 		console.log(tempPath  + " " + imageName);
 		// res.send({
 		// 	images:[1,3,7,9]
 		// });
-		var coor = req.body;
+		var cmd               = req.body;
+		cmd["commandType"]    = "searchWithImage";
+		cmd["queryImage"]     = tempPath;
+		cmd["numberOfResult"] = 20;
+		console.log(JSON.stringify(cmd));
 		// resizeImage 
-		exec("java -jar -Xmx4g ImageQuery.jar "+tempPath+" 20", onJavaReturn);	
+		exec("java -jar -Xmx4g ImageQuery.jar "+JSON.stringify(cmd) , onJavaReturn);	
 	}
 	else {
 		res.send("400", {message: "No image uploaded!"});
