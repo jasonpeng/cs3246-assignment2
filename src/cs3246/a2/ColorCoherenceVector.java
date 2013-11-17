@@ -192,6 +192,9 @@ public class ColorCoherenceVector implements FeatureExtractor{
         	beta[i] /= h * w;
         }
         
+        // Remove white colour (background colour)
+        alpha[63] = 0;
+        beta[63] = 0;
 	}
 	
 	public  double similarityMeasure(double[] alphaQuery, double[] alphaDoc, double[] betaQuery, double[] betaDoc){
@@ -273,23 +276,23 @@ public class ColorCoherenceVector implements FeatureExtractor{
 //    	String file2 = "23.jpg";
     	
     	
-    	list.add("21.jpg");
-    	list.add("120.jpg");
-    	list.add("30.jpg");
-    	list.add("34.jpg");
-    	list.add("101.jpg");
-    	list.add("1.jpg");
-    	
-    	list.add("110.jpg");
-    	list.add("108.jpg");
-    	list.add("149.jpg");
-    	list.add("86.jpg");
-    	list.add("83.jpg");
+    	list.add("27.jpg");
+//    	list.add("120.jpg");
+//    	list.add("30.jpg");
+//    	list.add("34.jpg");
+//    	list.add("101.jpg");
+//    	list.add("1.jpg");
+//    	
+//    	list.add("110.jpg");
+//    	list.add("108.jpg");
+//    	list.add("149.jpg");
+//    	list.add("86.jpg");
+//    	list.add("83.jpg");
 
     	String file1;
-    	String file2 = "21.jpg";
+    	String file2 = "26.jpg";
     	
-    	for (int i = 0; i < 11; i++){
+    	for (int i = 0; i < 1; i++){
     		file1 = list.get(i);
     		ColorCoherenceVector vec = new ColorCoherenceVector();
         	vec.computeCCV(FILE_PATH + file1);
