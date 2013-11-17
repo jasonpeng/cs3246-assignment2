@@ -124,11 +124,11 @@ public class SobelOperator implements FeatureExtractor {
 		}
 		
 		// second order feature extraction
-		mFeature = new double[kernels.size()*kernels.size()];
-		int fIndex = 0;
-		double base = 0;
+		List<double[][]> secondOrderList = new ArrayList<double[][]>();
 		for (double[][] firstOrder : firstOrderList) {
 			for (int[][] kernel : kernels) {
+				double[][] secondOrder = new double[mSizeX][mSizeY];
+				
 				for (x = 1; x < mSizeX - 1; x++) {
 					for (y = 1; y < mSizeY - 1; y++) {
 						double sum = 0;
@@ -139,8 +139,30 @@ public class SobelOperator implements FeatureExtractor {
 										* firstOrder[x+i][y+j];
 							}
 						}
+						secondOrder[x][y] = sum < 0 ? -sum : sum; //rectify
+					}
+				}
+				secondOrderList.add(secondOrder);
+			}
+		}
+		
+		// third order
+		mFeature = new double[kernels.size()*kernels.size()*kernels.size()];
+		int fIndex = 0;
+		double base = 0;
+		for (double[][] secondOrder : secondOrderList) {
+			for (int[][] kernel : kernels) {
+				for (x = 1; x < mSizeX - 1; x++) {
+					for (y = 1; y < mSizeY - 1; y++) {
+						double sum = 0;
 						
-						mFeature[fIndex] += sum < 0 ? -sum : sum; //rectify
+						for (int i = -1; i <= 1; i++) {
+							for (int j = -1; j <= 1; j++) {
+								sum += kernel[i+1][j+1]
+										* secondOrder[x+i][y+j];
+							}
+						}
+						mFeature[fIndex] += sum < 0 ? -sum : sum;
 					}
 				}
 				base += mFeature[fIndex] * mFeature[fIndex];
