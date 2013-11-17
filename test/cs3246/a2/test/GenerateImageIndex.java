@@ -10,6 +10,7 @@ import javax.imageio.ImageIO;
 
 import cs3246.a2.ColorCoherenceVector;
 import cs3246.a2.ColorHist;
+import cs3246.a2.Constant;
 import cs3246.a2.SobelOperator;
 import cs3246.a2.Util;
 import cs3246.a2.db.ImageIndexSqliteHelper;
@@ -18,7 +19,7 @@ import cs3246.a2.model.ImageIndex;
 public class GenerateImageIndex {
 
 	public static void main(String[] args) throws ClassNotFoundException {
-		ImageIndexSqliteHelper helper = new ImageIndexSqliteHelper("indexDB.sqlite");
+		ImageIndexSqliteHelper helper = new ImageIndexSqliteHelper(Constant.INDEX_DB_FILENAME);
 		helper.createTable();
 		
 		List<ImageIndex> indexList = new ArrayList<ImageIndex>();
