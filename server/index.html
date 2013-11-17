@@ -31,7 +31,12 @@
     	  	var DEBUG;
     	  	var SEARCH_TABS = ["#searchImageTab", "#searchColorTab", "#searchPatternTab","#searchTagTab"];
     	  	var PATTERN_FOLDER = "./patterns/";
-    	  	var PATTERNS = ["001","002","003","004","005","006","007","008","009","010","011","012"];
+    	  	
+    	  	var PATTERNS_TOPS = [];
+    	  	var PATTERNS_SHOES = [];
+    	  	var PATTERNS_BAGS = ["004","007","008","011","012","014"];
+    	  	var PATTERNS_DRESSES = ["013","015","016","017","018","019","020","021","022"];
+
     	  	var spinner = new Spinner();
     	  	var jcrop;
 
@@ -104,7 +109,7 @@
                         }
                 );
 
-                rederPatternImages();
+                renderPatternImages(PATTERNS_DRESSES);
 
     	  		$("#imgInp").change(function(){
     	  			startSpin();
@@ -287,14 +292,16 @@
 				}
 			};
 
-			var rederPatternImages =function(){
+			var renderPatternImages =function(PATTERNS_ARRAY){
+				console.log(PATTERNS_ARRAY);
+
 				$('#patternImages').remove();
 				$("#patternImagesDiv").append($('<table class = "tableImages" id="patternImages"></table>'));
 				var numOfCol = 6;
-				for(i = 0; i <= (PATTERNS.length-1)/numOfCol; i++){
+				for(i = 0; i <= (PATTERNS_ARRAY.length-1)/numOfCol; i++){
 					var tr = $('<tr'+" col="+i+'/>');
-					for(j = i*numOfCol; j<(i+1)*numOfCol && j<PATTERNS.length;j++){
-						var image = PATTERNS[j];
+					for(j = i*numOfCol; j<(i+1)*numOfCol && j<PATTERNS_ARRAY.length;j++){
+						var image = PATTERNS_ARRAY[j];
 						var td = $("<td width='50' style='vertical-align : bottom'></td>");
 						var div = $("<div/>");
 						var img = $("<img src='"+PATTERN_FOLDER+image+".png"+"'  height='50' width='50' value='"+image+"'/>");
@@ -407,13 +414,13 @@
 			<div class="searchImageLeft">
 				<form  method="post" action="/searchwithpattern" enctype="multipart/form-data" id="formPattern" role="form">
 					<div class="controls form-inline">
-						<input type="radio" name="category" value="dresses" checked="checked">
+						<input type="radio" name="category" value="dresses" checked="checked" onclick="renderPatternImages(PATTERNS_DRESSES)">
 						Dresses
-						<input type="radio" name="category" value="shoes">
+						<input type="radio" name="category" value="shoes" onclick="renderPatternImages(PATTERNS_SHOES)">
 						Shoes
-						<input type="radio" name="category" value="tops">
+						<input type="radio" name="category" value="tops" onclick="renderPatternImages(PATTERNS_TOPS)">
 						Tops
-						<input type="radio" name="category" value="bags">
+						<input type="radio" name="category" value="bags" onclick="renderPatternImages(PATTERNS_BAGS)">
 						Bags
 					</div>
 						<br>
