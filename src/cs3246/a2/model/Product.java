@@ -1,7 +1,10 @@
 package cs3246.a2.model;
 
+import cs3246.a2.Constant;
+
 public class Product {
 
+	private String mFilename;
 	private int mId;
 	private String mName;
 	private String mUrl;
@@ -14,6 +17,12 @@ public class Product {
 		mUrl = url;
 		mBrand = brand;
 		mPrice = price;
+		
+		mFilename = Constant.PRODUCT_DIR + id + ".jpg";
+	}
+	
+	public String getFilename() {
+		return mFilename;
 	}
 
 	public int getId() {
