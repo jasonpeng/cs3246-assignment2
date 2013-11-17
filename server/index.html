@@ -8,8 +8,8 @@
 	<link rel="stylesheet" type="text/css" href="./libs/css/jquery.Jcrop.min.css"/>
 	<script type="text/javascript" src="./libs/spin.min.js"></script>
 	<script type="text/javascript" src="./libs/jquery-1.10.2.min.js"></script>
-	<script src="http://code.jquery.com/jquery-migrate-1.0.0.js"></script>
-	<script src="http://malsup.github.com/jquery.form.js"></script>
+	<script src="./libs/jquery-migrate-1.0.0.js"></script>
+	<script src="./libs/jquery.form.js"></script>
 	<script type="text/javascript" src="./libs/jquery-ui.js"></script>
 	<script type="text/javascript" src="./libs/jquery.Jcrop.min.js"></script>
 	<!-- Add fancyBox main JS and CSS files -->
@@ -253,7 +253,7 @@
     														}
     													},
     	tpl: {
-	wrap     : '<div class="fancybox-wrap" tabIndex="-1"><div class="fancybox-skin"><div class="fancybox-outer"><div class="fancybox-inner"></div><div id="fancy-box-side"><p><a href='+product.mUrl+' target="_new">'+product.mUrl+'</a></p></div></div></div></div></div>',
+	wrap     : '<div class="fancybox-wrap" tabIndex="-1"><div class="fancybox-skin"><div class="fancybox-outer"><div class="fancybox-inner"></div><div id="fancy-box-side"><p>'+product.mPrice+'$</p><p><a href='+product.mUrl+' target="_new">'+product.mUrl+'</a></p></div></div></div></div></div>',
 	image    : '<img class="fancybox-image" src="{href}" alt="" />',
 	iframe   : '<iframe id="fancybox-frame{rnd}" name="fancybox-frame{rnd}" class="fancybox-iframe" frameborder="0" vspace="0" hspace="0"' + ($.browser.msie ? ' allowtransparency="true"' : '') + '></iframe>',
 	error    : '<p class="fancybox-error">The requested content cannot be loaded.<br/>Please try again later.</p>',
