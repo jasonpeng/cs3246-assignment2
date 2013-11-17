@@ -6,6 +6,8 @@ import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
+import java.awt.Color;
+import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -30,9 +32,9 @@ import cs3246.a2.model.Product;
 
 public class WebServiceHandler {
 	
-	private static final double weightHist = 0.5;
-	private static final double weightEdge = 0.25;
-	private static final double weightCCV = 0.25;
+	private static final double weightHist = 1; // 0.5
+	private static final double weightEdge = 0; // 0.25
+	private static final double weightCCV = 0; // 0.25
 	
 	public static void main(String[] args) throws IOException, ClassNotFoundException {
 		Gson gson = new Gson();
@@ -75,8 +77,7 @@ public class WebServiceHandler {
 		//AdjacentSimilarity aSim = new AdjacentSimilarity();
 		
 		ArrayList<Result> resultList = new ArrayList<Result>();
-		for (int i = 0; i < number; i++){
-			ImageIndex imageIndex = imageIndexList.get(i);
+		for (ImageIndex imageIndex : imageIndexList){
 			
 			double[] similarityHist = imageIndex.getSimilarityHist();
 			double[] similarityEdge = imageIndex.getSimilarityEdge();
@@ -101,11 +102,17 @@ public class WebServiceHandler {
 		Collections.sort(resultList);
 		
 		Gson gson = new Gson();
-		System.out.print(gson.toJson(resultList));
+		System.out.print(gson.toJson(resultList.subList(0, number)));
 	}
 	
-	private static void queryWithColor(int colorValue, int number, String category){
-		BufferedImage bi = null;
+	private static void queryWithColor(int colorValue, int number, String category) throws ClassNotFoundException{
+		int width = 2;
+		int height = 2;
+		BufferedImage bi = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+		int[] data = {colorValue, colorValue, colorValue, colorValue};
+		bi.setRGB(0, 0, width, height, data, 0, width);
+		
+		queryWithImage(bi, number, category);
 	}
 
 }
