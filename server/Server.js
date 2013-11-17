@@ -63,7 +63,8 @@ app.post("/searchwithcolor", function(req, res){
 	console.log(req.body);
 	if(req.body.color != null){
 			// resizeImage 
-	// exec("java -jar -Xmx4g ImageQuery.jar "+tempPath+" 20", onJavaReturn);	
+	// exec("java -jar -Xmx4g ImageQuery.jar "+tempPath+" 20", onJavaReturn);
+	res.send("200", req.body);
 	}
 	else {
 		res.send("400", {message: "No image uploaded!"});

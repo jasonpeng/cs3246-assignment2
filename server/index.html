@@ -87,7 +87,7 @@
                         function(color, context)
                         {
                           var all = color.val('all');
-                          alert('Color chosen - r, g, b: ' + color.val('red').r + ' ' + color.val('green').g + ' ' + color.val('blue').b );
+                          $("#color").val(all.hex);
                         }
                 );
 
@@ -101,6 +101,22 @@
 
 
     	  		$('#form1').ajaxForm({
+    	  			beforeSerialize: function($form, options) { 
+    	  				startSpin();
+    	  			},
+    	  			success: function (result) {
+    	  				DEBUG = result;
+    	  				console.log(result);
+    	  				displayImages(JSON.parse(result.images));
+    	  				stopSpin();
+    	  			},
+    	  			error: function (error){
+    	  				console.log(error.responseJSON);
+    	  				stopSpin();
+    	  			}
+    	  		});
+
+    	  		$('#formColor').ajaxForm({
     	  			beforeSerialize: function($form, options) { 
     	  				startSpin();
     	  			},
@@ -310,7 +326,7 @@
 		</div>
 		<div id="searchColorTabDiv" style="display:none" class="searchInputDiv">
 			<!-- Define the place holder for jPicker. The render function and callback are derined above -->
-			<div id="Inline"></div>
+			<div id="Inline">Color: </div>
 			<form  method="post" action="/searchwithcolor" enctype="multipart/form-data" id="formColor" role="form">
 					<p>
 						<input type="radio" name="category" value="dresses" checked="checked">
