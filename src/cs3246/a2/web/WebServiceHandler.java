@@ -105,7 +105,7 @@ public class WebServiceHandler {
 	}
 	
 	private static void queryWithColor(int colorValue, int number, String category){
-		BufferedImage bi
+		BufferedImage bi = null;
 	}
 
 }
