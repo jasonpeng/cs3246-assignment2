@@ -71,7 +71,18 @@
                 //$('#Inline').jPicker();
 
                 $('#Inline').jPicker(
-                        {},
+                        {
+
+                            window:
+                            {
+                                expandable:  true,
+                                position:{
+                                    x: 'screenCenter', 
+                                    y: 250
+                                }
+                            },
+                            
+                        },
                         // Callback function:
                         function(color, context)
                         {

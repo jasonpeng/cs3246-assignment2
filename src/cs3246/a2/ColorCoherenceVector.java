@@ -10,7 +10,6 @@ import java.util.HashMap;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 
-import cs3246.a2.Document;
 
 public class ColorCoherenceVector implements FeatureExtractor{
 
@@ -317,37 +316,6 @@ public class ColorCoherenceVector implements FeatureExtractor{
 		
 		return result;
 	}
-	
-	public  String[] findSimilarResults(String fileName) throws IOException{
-    	ArrayList<Document> list = new ArrayList<Document>();
-    	
-    	computeCCV(fileName);
-    	
-    	for (int i = 1; i <= NUM_OF_FILES; i++){
-
-    		String newName = FILE_PATH + i + ".jpg";
-    		if (fileName.equals(newName)){
-    			continue;
-    		}
-    		System.out.println("Processing image: " + i);
-    		
-    		ColorCoherenceVector vec = new ColorCoherenceVector();
-    		double[] feature = vec.getFeature(ImageIO.read(new File(newName)));
-    		double result = computeSimilarity(feature, new NormalizedSimilarity());
-    		
-    		Document doc = new Document(newName, result);
-    		list.add(doc);
-    	}
-    	
-		Collections.sort(list);
-    	
-		String[] results = new String[list.size()];
-		for ( int i = 0; i < list.size(); i++){
-			results[i] = list.get(i).getFileName();
-		}
-		
-    	return results;
-    }
 	
 	@Override
 	public double[] getFeature(BufferedImage bi) {
