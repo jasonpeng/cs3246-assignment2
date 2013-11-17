@@ -20,48 +20,11 @@ public class ColorCoherenceVector implements FeatureExtractor{
 	public  int numOfDifferentAreas;
 	public  double[] alpha;
 	public  double[] beta;
-	private  final static int NUM_OF_FILES = 30;
 	private  final double u = 0.9;
 	private  final double t = 0.00000001;
 	private final int THRESHOLD = 15;
-	private  final static String FILE_PATH = "./image/";
+	private  final static String FILE_PATH = "./server/image/";
 
-	
-	/**
-	 * We first blur the image slightly by replacing pixel values with the average value in a small local neighborhood
-	 * currently including the 8 adjacent pixels). This eliminates small vari- ations between neighboring pixels. 
-	 * @param w
-	 * @param h
-	 */
-	private  void applyAverageFilter(int w, int h){
-		for (int i = 1; i < h - 1; i++){
-			for (int j = 1; j < w - 1; j++){
-				
-				//System.out.println(i + " " + j + " " + " " + w + " " + h);
-                int addr = j + i * w;
-                
-                
-				for (int k = 0; k < 3; k++){
-					int shift = 8 * k;
-	                int color = + originalImage[addr - 1] >> shift
-							+ originalImage[addr - w] >> shift
-							+ originalImage[addr - 1 - w] >> shift
-									
-							+ originalImage[addr + 1] >> shift
-							+ originalImage[addr + w] >> shift
-							+ originalImage[addr + 1 + w] >> shift
-									
-							+ originalImage[addr - 1 + w] >> shift
-							+ originalImage[addr - w + 1] >> shift;
-					color /= 8;
-					currentImage[addr] += color << shift;
-				}						
-			}
-		}
-		
-		img = new BufferedImage(w, h, BufferedImage.TYPE_INT_RGB);
-        img.setRGB(0, 0, w, h, currentImage, 0, w);  
-	}
 	
 	/**
 	 * We first blur the image slightly by Gaussian Filter.
@@ -180,9 +143,11 @@ public class ColorCoherenceVector implements FeatureExtractor{
             color[i] = (((d >> 22) & 3) << 4) + (((d >> 14) & 3) << 2) + ((d >> 6) & 3);
             
             if(count[i] < t * w * h || count[i] < THRESHOLD){
-                beta[color[i]]++;
+                beta[color[i]] += count[i];
+                //beta[color[i]] ++;
             }else{
-                alpha[color[i]]++;
+                alpha[color[i]] += count[i];
+                //alpha[color[i]] ++;
             }
         }
 	}
@@ -225,81 +190,14 @@ public class ColorCoherenceVector implements FeatureExtractor{
         	if(alpha[i] == 0 && beta[i] == 0) continue;
         	alpha[i] /= h * w;
         	beta[i] /= h * w;
-        	//System.out.printf("%d (%3f, %3f)%n", i, alpha[i], beta[i]);
         }
-
-	}
-	
-	private  void test(String fileName) throws IOException{
-    	JFrame f = new JFrame("CCV");
-      f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-      f.setLayout(new GridLayout(3, 1));
-      f.setSize(1200, 1800);
-
-      JLabel l1 = new JLabel();
-      JLabel l2 = new JLabel();
-      JLabel l3 = new JLabel();
-      f.add(l1);
-      f.add(l2);
-      f.add(l3);
-
-      BufferedImage imgsrc = ImageIO.read(new File(fileName));
-      int w = imgsrc.getWidth();
-      int h = imgsrc.getHeight();
-      
-      // Size Normalization
-      
-      int limit = 400;
-      if(w < h){
-          w = w * limit / h;
-          h = limit;
-      }else{
-          h = h * limit / w;
-          w = limit;
-      }
-      
-      img = new BufferedImage(w, h, BufferedImage.TYPE_INT_RGB);
-      Graphics2D grp = (Graphics2D) img.getGraphics();
-      grp.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-      grp.drawImage(imgsrc, 0, 0, w, h, null);
-      grp.dispose();
-
-      l1.setIcon(new ImageIcon(img));
-
-      originalImage = img.getRGB(0, 0, w, h, null, 0, w);
-      currentImage = new int[originalImage.length];
-      
-      // Gaussian Filter
-      applyGaussianFilter(w, h);
-      //applyAverageFilter(w, h);
-      l2.setIcon(new ImageIcon(img));
-
-      // Color Reduction
-      reduceColor();
-      
-      img = new BufferedImage(w, h, BufferedImage.TYPE_INT_RGB);
-      img.setRGB(0, 0, w, h, currentImage, 0, w);
-      l3.setIcon(new ImageIcon(img));
-
-      // Tagging
-      tagColor(w, h);
-      
-      // Aggregate
-      computeCoherence(w, h);
-      
-      // Display
-      for(int i = 0; i < alpha.length; ++i){
-          if(alpha[i] == 0 && beta[i] == 0) continue;
-          System.out.printf("%2d (%3d, %3d)%n", i, alpha[i], beta[i]);
-      }
-
-      f.setVisible(true);
+        
 	}
 	
 	public  double similarityMeasure(double[] alphaQuery, double[] alphaDoc, double[] betaQuery, double[] betaDoc){
 		double alphaSim = computeNormalizedSimilarity(alphaQuery, alphaDoc);
 		double betaSim = computeNormalizedSimilarity(betaQuery, betaDoc);
-		//System.out.println("In similarityMeasuer, Alpha and Beta: " + alphaSim + " " + betaSim);
+
 		return u * alphaSim + (1 - u) * betaSim;
 	}
 	
@@ -349,42 +247,58 @@ public class ColorCoherenceVector implements FeatureExtractor{
 		}
 		double alphaSim = sim.compute(alpha, alphaInDoc);
 		double betaSim = sim.compute(beta, betaInDoc);
-		//System.out.println("In computeSimilarity, Alpha and Beta: " + alphaSim + " " + betaSim);
 		
 		return u * alphaSim + (1 - u) * betaSim;	
 	}
 	
     public static void main(String[] args) throws IOException{
     	
-    	ColorCoherenceVector vec = new ColorCoherenceVector();
+    	// Test the result of two images:
+    	ArrayList<String> list = new ArrayList<String>();
     	
-    	vec.computeCCV(FILE_PATH + "297.png");
-    	double[] alpha1 = vec.alpha;
-    	double[] beta1 = vec.beta;
-    	
-    	ColorCoherenceVector vec2 = new ColorCoherenceVector();
-    	double[] document = vec2.getFeature(ImageIO.read(new File(FILE_PATH + "297.png")));
-    	
-    	double alphaInDoc[] = new double[64];
-		double betaInDoc[] = new double[64];
-		
-		for (int i = 0; i < 64; i++){
-			alphaInDoc[i] = document[i];
-		}
-		for (int j = 64; j < 128; j++){
-			betaInDoc[j - 64] = document[j];
-		}
-		
-		double result1 = vec.similarityMeasure(alpha1, alphaInDoc, beta1, betaInDoc);
-    	double result2 = vec.computeSimilarity(document, new NormalizedSimilarity());
-    	System.out.println("Results: " + result1 + " " + result2);
-    	
-//    	ColorCoherenceVector vec = new ColorCoherenceVector();
-//    	String[] results = new String[NUM_OF_FILES];
-//    	results = vec.findSimilarResults(FILE_PATH + "query1.jpg");
+//    	list.add("64.jpg");
+//    	list.add("108.jpg");
+//    	list.add("1.jpg");
+//    	list.add("398.jpg");
+//    	list.add("34.jpg");
+//    	list.add("116.jpg");
 //    	
-//    	for (int i = 0; i < NUM_OF_FILES - 1; i++){
-//    		System.out.println(results[i]);
-//    	}
+//    	list.add("30.jpg");
+//    	list.add("158.jpg");
+//    	list.add("147.jpg");
+//    	list.add("141.jpg");
+//    	list.add("248.jpg");
+//
+//    	String file1;
+//    	String file2 = "23.jpg";
+    	
+    	
+    	list.add("21.jpg");
+    	list.add("120.jpg");
+    	list.add("30.jpg");
+    	list.add("34.jpg");
+    	list.add("101.jpg");
+    	list.add("1.jpg");
+    	
+    	list.add("110.jpg");
+    	list.add("108.jpg");
+    	list.add("149.jpg");
+    	list.add("86.jpg");
+    	list.add("83.jpg");
+
+    	String file1;
+    	String file2 = "21.jpg";
+    	
+    	for (int i = 0; i < 11; i++){
+    		file1 = list.get(i);
+    		ColorCoherenceVector vec = new ColorCoherenceVector();
+        	vec.computeCCV(FILE_PATH + file1);
+        	
+        	ColorCoherenceVector vec2 = new ColorCoherenceVector();
+        	double[] document = vec2.getFeature(ImageIO.read(new File(FILE_PATH + file2)));
+    		
+    		double result = vec.computeSimilarity(document, new NormalizedSimilarity());
+        	System.out.println("Result for " + file1 + ": "  + result);
+    	}
     }
 }
