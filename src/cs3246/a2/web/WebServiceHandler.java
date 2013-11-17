@@ -9,6 +9,8 @@ import java.io.IOException;
 
 import javax.imageio.ImageIO;
 
+import com.google.gson.Gson;
+
 import cs3246.a2.AdjacentSimilarity;
 import cs3246.a2.ColorCoherenceVector;
 import cs3246.a2.ColorHist;
@@ -17,6 +19,7 @@ import cs3246.a2.Document;
 import cs3246.a2.NormalizedSimilarity;
 import cs3246.a2.SobelOperator;
 import cs3246.a2.Util;
+import cs3246.a2.model.Command;
 import cs3246.a2.model.ImageIndex;
 import cs3246.a2.model.ImageIndex;
 
@@ -31,12 +34,24 @@ public class WebServiceHandler {
 	private static final double weightCCV = 0.25;
 	
 	public static void main(String[] args) throws IOException{
-					
-		BufferedImage bi = ImageIO.read(new File(IMAGE_UPLOAD_PATH + args[0]));
+		Gson gson = new Gson();
+		Command cmd = gson.fromJson(args[0], Command.class);
+		if(cmd.commandType.equals("searchWithImage")){
+			BufferedImage bi = ImageIO.read(new File(cmd.queryImage));
+			if(cmd.isCropped){
+				bi = bi.getSubimage(cmd.cropX, cmd.cropY, cmd.cropW, cmd.cropH);
+			}
+			queryWithImage(bi, cmd.numberOfResult);
+				
+		}else if(cmd.commandType.equals("searchWithColor")){
+			
+		}
+		
+	}
+	
+	private static boolean queryWithImage(BufferedImage bi, int number){
 		bi = Util.convertColorspace(bi, BufferedImage.TYPE_INT_RGB);
-		
-		int number	= Integer.parseInt(args[1]);
-		
+				
 		// Extract features of the query and create query classes:
 		ColorHist hist = new ColorHist();
 		double[] histogramResult = hist.getFeature(bi);
