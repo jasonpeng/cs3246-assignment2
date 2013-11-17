@@ -48,12 +48,12 @@ h1 {
   margin: 20px 0;
 }
 
-#searchImageLeft{
+.searchImageLeft{
 	float: left;
 	width: 250px;
 }
 
-#searchImageRight{
+.searchImageRight{
 	margin-left: 270px;
 
 }
