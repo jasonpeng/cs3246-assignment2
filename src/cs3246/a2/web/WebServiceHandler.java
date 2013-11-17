@@ -101,7 +101,9 @@ public class WebServiceHandler {
 		Collections.sort(resultList);
 		
 		Gson gson = new Gson();
-		System.out.print(gson.toJson(resultList.subList(0, number)));
+		if (number < resultList.size())
+			System.out.print(gson.toJson(resultList.subList(0, number)));
+		else System.out.print(gson.toJson(resultList));
 	}
 	
 	private static void queryWithColor(int colorValue, int number, String category) throws ClassNotFoundException{
@@ -109,9 +111,33 @@ public class WebServiceHandler {
 		int height = 200;
 		BufferedImage bi = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
 		int[] data = new int[width*height];
-		for(int i = 0; i < width*height; i++)
-			data[i] = colorValue;
+		
+		int step = 10;
+
+		for(int i = 0; i < width*height; i++){
+			int red = colorValue / 256 / 256;
+			int green = (colorValue / 256) % 256;
+			int blue = colorValue % 256;
+			
+			if (red > step && red < 255 - step){
+				red = red - step / 2 + ((int) Math.floor(Math.random())) % step;
+			}
+			
+			if (green > step && green < 255 - step){
+				green = green - step / 2 + ((int) Math.floor(Math.random())) % step;
+			}
+			
+			if (blue > step && blue < 255 - step){
+				blue = blue - step / 2 + ((int) Math.floor(Math.random())) % step;
+			}
+			data[i] = red * 256 * 256 + green * 256 + blue;
+		}
 		bi.setRGB(0, 0, width, height, data, 0, width);
+		
+//		 Graphics2D g = bi.createGraphics();
+//         g.setColor(Color.BLUE);
+//         g.fillRect(0, 0, bi.getWidth(), bi.getHeight());
+//         g.dispose();
 		
 		queryWithImage(bi, number, category, 1, 0, 0);
 	}
