@@ -73,10 +73,10 @@
 
     	  	var resetCropFields = function(){
     	  		$("#isCropped").val(false);
-      			$("#cropX").val("");
-      			$("#cropY").val("");
-      			$("#cropW").val("");
-      			$("#cropH").val("");
+      			$("#cropX").val(0);
+      			$("#cropY").val(0);
+      			$("#cropW").val(0);
+      			$("#cropH").val(0);
     	  	};
 
     	  	$(document).ready(function(){
@@ -316,11 +316,11 @@
 						<br>
 						<br>
 					<p>
-						<input type="hidden" id="isCropped" name="isCropped"/>
-						<input type="hidden" id="cropX" name="cropX"/>
-						<input type="hidden" id="cropY" name="cropY"/>
-						<input type="hidden" id="cropW" name="cropW"/>
-						<input type="hidden" id="cropH" name="cropH"/>
+						<input type="hidden" id="isCropped" name="isCropped" value="false"/>
+						<input type="hidden" id="cropX" name="cropX" value="0"/>
+						<input type="hidden" id="cropY" name="cropY" value="0"/>
+						<input type="hidden" id="cropW" name="cropW" value="0"/>
+						<input type="hidden" id="cropH" name="cropH" value="0"/>
 						<input type='file' id="imgInp" name="image" />
 					</p>
 					<p>

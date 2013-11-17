@@ -68,7 +68,7 @@ public class ProductSqliteHelper extends SqliteHelper {
 			productList = new ArrayList<Product>();
 			
 			ResultSet rs =
-					statement.executeQuery("select * from product_preview " 
+					statement.executeQuery("select * from product_previews " 
 							+ clauses);
 			
 			while (rs.next()) {

@@ -54,7 +54,7 @@ app.post("/searchwithimage", function(req, res){
 		cmd["numberOfResult"] = 20;
 		console.log(JSON.stringify(cmd));
 		// resizeImage 
-		exec("java -jar -Xmx4g ImageQuery.jar "+JSON.stringify(cmd) , onJavaReturn);	
+		exec("java -jar -Xmx4g ImageQuery.jar "+ "'"+JSON.stringify(cmd)+"'" , onJavaReturn);	
 	}
 	else {
 		res.send("400", {message: "No image uploaded!"});

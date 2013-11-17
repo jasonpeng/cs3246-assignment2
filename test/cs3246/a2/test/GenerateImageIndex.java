@@ -23,7 +23,7 @@ public class GenerateImageIndex {
 		helper.createTable();
 		
 		List<ImageIndex> indexList = new ArrayList<ImageIndex>();
-		String imageFolder = args[0];
+		String imageFolder = Constant.PRODUCT_DIR;
 
 		try {
 			File folder;

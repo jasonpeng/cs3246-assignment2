@@ -36,6 +36,7 @@ public class WebServiceHandler {
 	
 	public static void main(String[] args) throws IOException, ClassNotFoundException {
 		Gson gson = new Gson();
+		System.out.println(args[0]);
 		Command cmd = gson.fromJson(args[0], Command.class);
 		if(cmd.commandType.equals("searchWithImage")){
 			BufferedImage bi = ImageIO.read(new File(cmd.queryImage));
