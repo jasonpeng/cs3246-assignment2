@@ -51,7 +51,7 @@ public class WebServiceHandler {
 //			int colorValue = Integer.parseInt(cmd.queryColor);
 			queryWithColor(cmd.queryColor, cmd.numberOfResult, cmd.category);
 		}
-		else if(cmd.commandType.equals("searchWithColor")){
+		else if(cmd.commandType.equals("searchWithPattern")){
 			BufferedImage bi = ImageIO.read(new File(cmd.queryImage));
 			bi = Util.convertColorspace(bi, BufferedImage.TYPE_INT_RGB);
 			queryWithImage(bi, cmd.numberOfResult, cmd.category, 0.2, 0.2, 0.6);
