@@ -32,9 +32,9 @@ import cs3246.a2.model.Product;
 
 public class WebServiceHandler {
 	
-	private static final double weightHist = 1; // 0.5
+	private static final double weightHist = 0; // 0.5
 	private static final double weightEdge = 0; // 0.25
-	private static final double weightCCV = 0; // 0.25
+	private static final double weightCCV = 1; // 0.25
 	
 	public static void main(String[] args) throws IOException, ClassNotFoundException {
 		Gson gson = new Gson();
@@ -83,7 +83,6 @@ public class WebServiceHandler {
 		
 		ArrayList<Result> resultList = new ArrayList<Result>();
 		for (ImageIndex imageIndex : imageIndexList){
-			
 			double[] similarityHist = imageIndex.getSimilarityHist();
 			double[] similarityEdge = imageIndex.getSimilarityEdge();
 			double[] similarityCCV = imageIndex.getSimilarityCCV();
