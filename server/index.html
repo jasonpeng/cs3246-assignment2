@@ -15,10 +15,10 @@
 	<!-- Add fancyBox main JS and CSS files -->
 	<script type="text/javascript" src="./libs/fancybox/jquery.fancybox.js?v=2.1.5"></script>
 	<link rel="stylesheet" type="text/css" href="./libs/fancybox/jquery.fancybox.css?v=2.1.5" media="screen" />
-    <!-- Resources for colour picker -->
-    <script src="./jPicker/jpicker-1.1.6.min.js" type="text/javascript"></script>
-    <link rel="Stylesheet" type="text/css" href="./jPicker/css/jpicker-1.1.6.min.css" />
-    <link rel="Stylesheet" type="text/css" href="./jPicker/jPicker.css" />
+	<!-- Resources for colour picker -->
+	<script src="./jPicker/jpicker-1.1.6.min.js" type="text/javascript"></script>
+	<link rel="Stylesheet" type="text/css" href="./jPicker/css/jpicker-1.1.6.min.css" />
+	<link rel="Stylesheet" type="text/css" href="./jPicker/jPicker.css" />
 	<!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
 	<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
 	<!--[if lt IE 9]>
@@ -221,116 +221,126 @@
 					}
 				}
 			}
+	</script>
+</head>
+<body>
+	<div id="wrap">
+		<div id="manuScreen" class="container">
+			<div class="page-header">
+				<h1>Search Your Fashion</h1>
+			</div>
 
-    	</head>
-    	<body>
-    		<div id="wrap">	
-    			<div id="manuScreen" class="container">
-    				<div class="page-header">
-    					<h1>Search Your Fashion</h1>
-    				</div>
-    				
-                    <div>
-    					<div class="navbar navbar-default" role="navigation">
-    						<div class="container">
-          						<div class="navbar-header">
-            						<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-              							<span class="sr-only">Toggle navigation</span>
-              							<span class="icon-bar"></span>
-              							<span class="icon-bar"></span>
-              							<span class="icon-bar"></span>
-            						</button>
-            						<a class="navbar-brand" href="#">Search Method</a>
-            					</div>
-            					<div class="collapse navbar-collapse">
-            						<ul class="nav navbar-nav">
-            							<li class="active"><a id="searchImageTab" href="#">Image</a></li>
-            							<li><a id="searchColorTab" href="#">Color</a></li>
-            							<li><a id="searchPatternTab" href="#">Pattern</a></li>
-            							<li><a id="searchTagTab" href="#">Tag</a></li>
-            						</ul>
-            					</div><!--/.nav-collapse -->
-            				</div>
-            			</div>
-
-            			<div id="searchImageTabDiv" class="searchInputDiv">	
-            				<form  method="post" action="/upload" enctype="multipart/form-data" id="form1" role="form">
-            					<p><input type='file' id="imgInp" name="image" /></p>
-            					<p><input type="submit" value="Search" class="btn btn-default"/></p>
-            				</form>
-            				<img id="previewImage" src="#" style="display:none" class="img-responsive" alt="your image" />
-            			</div>
-            			
-                        <div id="searchColorTabDiv" style="display:none" class="searchInputDiv">
-            				<p>Testing Search by color</p>
-                            <!-- Define the place holder for jPicker. The render function and callback are derined above -->
-                            <div id="Inline"></div>
-            			</div>
-
-                        <div id="searchPatternTabDiv" style="display:none" class="searchInputDiv">
-            				<p>Testing Search by patternr</p>
-            			</div>
-            			
-                        <div id="searchTagTabDiv" style="display:none" class="searchInputDiv">
-            				<p>Testing Search by tag</p>
-            			</div>
-            	    </div>
-            	
-                    <div>
-            		  <table class = "table_books" id="table_images"></table>
-            	    </div>
-					
-                    <!-- <p>
-						<button type="button" class="btn btn-primary" id="rf-btn">RF</button>
-					</p> -->
-
-				<div id="searchImageTabDiv" class="searchInputDiv">
-					<div id="searchImageLeft">
-						<form  method="post" action="/upload" enctype="multipart/form-data" id="form1" role="form">
-							<p>
-								<input type='file' id="imgInp" name="image" />
-								<input type="hidden" id="isCropped" name="isCropped"/>
-								<input type="radio" name="category" value="dresses" checked="checked">Dresses<br>
-								<input type="radio" name="category" value="shoes">Shoes<br>
-								<input type="radio" name="category" value="tops">Tops<br>
-								<input type="radio" name="category" value="bags">Bags
-								<input type="hidden" id="x1" name="x1"/>
-								<input type="hidden" id="y1" name="y1"/>
-								<input type="hidden" id="x2" name="x2"/>
-								<input type="hidden" id="y2" name="y2"/>
-							</p>
-							<p>
-								<input type="submit" value="Search" class="btn btn-default"/>
-							</p>
-						</form>
-					</div>
-					<div id="searchImageRight">
-						<img id="previewImage" src="#" style="display:none" class="img-responsive" alt="your image" />
+			<div>
+				<div class="navbar navbar-default" role="navigation">
+					<div class="container">
+						<div class="navbar-header">
+							<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+								<span class="sr-only">Toggle navigation</span>
+								<span class="icon-bar"></span>
+								<span class="icon-bar"></span>
+								<span class="icon-bar"></span>
+							</button>
+							<a class="navbar-brand" href="#">Search Method</a>
+						</div>
+						<div class="collapse navbar-collapse">
+							<ul class="nav navbar-nav">
+								<li class="active">
+									<a id="searchImageTab" href="#">Image</a>
+								</li>
+								<li>
+									<a id="searchColorTab" href="#">Color</a>
+								</li>
+								<li>
+									<a id="searchPatternTab" href="#">Pattern</a>
+								</li>
+								<li>
+									<a id="searchTagTab" href="#">Tag</a>
+								</li>
+							</ul>
+						</div>
+						<!--/.nav-collapse -->
 					</div>
 				</div>
-				<div id="searchColorTabDiv" style="display:none" class="searchInputDiv">
-					<p>Testing Search by color</p>
-				</div>
-				<div id="searchPatternTabDiv" style="display:none" class="searchInputDiv">
-					<table class = "patternImages" id="patternImages"></table>	
-				</div>
-				<div id="searchTagTabDiv" style="display:none" class="searchInputDiv">
-					<p>Testing Search by tag</p>
-				</div>
-			</div>
-			<div id="imageDisplayDiv">
-				<table class = "tableImages" id="tableImages"></table>
-			</div>
+
 			<!-- <p>
 			<button type="button" class="btn btn-primary" id="rf-btn">RF</button>
 		</p>
 		-->
+		<div id="searchImageTabDiv" class="searchInputDiv">
+			<div id="searchImageLeft">
+				<form  method="post" action="/searchwithimage" enctype="multipart/form-data" id="form1" role="form">
+					<p>
+						<input type='file' id="imgInp" name="image" />
+						<input type="hidden" id="isCropped" name="isCropped"/>
+						<input type="radio" name="category" value="dresses" checked="checked">
+						Dresses
+						<br>
+						<input type="radio" name="category" value="shoes">
+						Shoes
+						<br>
+						<input type="radio" name="category" value="tops">
+						Tops
+						<br>
+						<input type="radio" name="category" value="bags">
+						Bags
+						<input type="hidden" id="x1" name="x1"/>
+						<input type="hidden" id="y1" name="y1"/>
+						<input type="hidden" id="x2" name="x2"/>
+						<input type="hidden" id="y2" name="y2"/>
+					</p>
+					<p>
+						<input type="submit" value="Search" class="btn btn-default"/>
+					</p>
+				</form>
+			</div>
+			<div id="searchImageRight">
+				<img id="previewImage" src="#" style="display:none" class="img-responsive" alt="your image" />
+			</div>
+		</div>
+		<div id="searchColorTabDiv" style="display:none" class="searchInputDiv">
+			<!-- Define the place holder for jPicker. The render function and callback are derined above -->
+			<div id="Inline"></div>
+			<form  method="post" action="/searchwithcolor" enctype="multipart/form-data" id="formColor" role="form">
+					<p>
+						<input type="radio" name="category" value="dresses" checked="checked">
+						Dresses
+						<br>
+						<input type="radio" name="category" value="shoes">
+						Shoes
+						<br>
+						<input type="radio" name="category" value="tops">
+						Tops
+						<br>
+						<input type="radio" name="category" value="bags">
+						Bags
+						<input type="hidden" id="color" name="color"/>
+					</p>
+					<p>
+						<input type="submit" value="Search" class="btn btn-default"/>
+					</p>
+				</form>
+		</div>
+		<div id="searchPatternTabDiv" style="display:none" class="searchInputDiv">
+			<p>Testing Search by pattern</p>
+			<table class = "patternImages" id="patternImages"></table>
+		</div>
+		<div id="searchTagTabDiv" style="display:none" class="searchInputDiv">
+			<p>Testing Search by tag</p>
+		</div>
 	</div>
+	<div id="imageDisplayDiv">
+		<table class = "tableImages" id="tableImages"></table>
+	</div>
+	<!-- <p>
+	<button type="button" class="btn btn-primary" id="rf-btn">RF</button>
+</p>
+-->
+</div>
 </div>
 <div id="footer">
-	<div class="container">
-		<p class="text-muted credit">&copy; CS3246 AY1314</p>
-	</div>
+<div class="container">
+<p class="text-muted credit">&copy; CS3246 AY1314</p>
+</div>
 </div>
 
 </body>
