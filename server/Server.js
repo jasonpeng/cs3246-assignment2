@@ -81,6 +81,26 @@ app.post("/searchwithcolor", function(req, res){
 	}	
 });
 
+app.post("/searchwithpattern", function(req, res){
+	response = res;
+	console.log(req.body);
+	if(req.body.pattern != null){
+			// resizeImage 
+	var cmd = {
+			commandType:"searchWithPattern",
+			numberOfResult: 20,
+			queryImage: req.body.pattern,
+			category: req.body.category,
+			isCropped: false
+	};
+	console.log(JSON.stringify(cmd));
+	exec("java -jar -Xmx4g ImageQuery.jar "+ "'"+JSON.stringify(cmd)+"'" , onJavaReturn);
+	}
+	else {
+		res.send("400", {message: "No image uploaded!"});
+	}	
+});
+
  /* serves all the static files */
  app.get(/^(.+)$/, function(req, res){ 
      console.log('static file request : ' + req.params);

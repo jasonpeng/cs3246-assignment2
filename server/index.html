@@ -147,6 +147,22 @@
     	  			}
     	  		});
 
+    	  		$('#formPattern').ajaxForm({
+    	  			beforeSerialize: function($form, options) { 
+    	  				startSpin();
+    	  			},
+    	  			success: function (result) {
+    	  				DEBUG = result;
+    	  				console.log(result);
+    	  				displayImages(JSON.parse(result.images));
+    	  				stopSpin();
+    	  			},
+    	  			error: function (error){
+    	  				console.log(error.responseJSON);
+    	  				stopSpin();
+    	  			}
+    	  		});
+
     	  		$("#rf-btn").click(function(){
     	  			var checkboxes = $("input[type='checkbox']:checked");
     	  			var rfs=[];
@@ -278,10 +294,15 @@
 				for(i = 0; i <= (PATTERNS.length-1)/numOfCol; i++){
 					var tr = $('<tr'+" col="+i+'/>');
 					for(j = i*numOfCol; j<(i+1)*numOfCol && j<PATTERNS.length;j++){
-						var image = PATTERNS[j]+".png";
+						var image = PATTERNS[j];
 						var td = $("<td width='50' style='vertical-align : bottom'></td>");
 						var div = $("<div/>");
-						var img = $("<img src='"+PATTERN_FOLDER+image+"'  height='50' max-width='50'/>");
+						var img = $("<img src='"+PATTERN_FOLDER+image+".png"+"'  height='50' width='50' value='"+image+"'/>");
+						img.click(function(){
+							// console.log($(this).attr("value"));
+							$("#pattern").val(PATTERN_FOLDER+$(this).attr("value")+".png");
+							$("#formPattern").submit();
+						});
 						tr.append(td);
 						td.append(div);
 						div.append(img);
@@ -329,7 +350,7 @@
 		</p>
 		-->
 		<div id="searchImageTabDiv" class="searchInputDiv">
-			<div id="searchImageLeft">
+			<div class="searchImageLeft">
 				<form  method="post" action="/searchwithimage" enctype="multipart/form-data" id="form1" role="form">
 					<div class="controls form-inline">
 						<input type="radio" name="category" value="dresses" checked="checked">
@@ -356,7 +377,7 @@
 					</p>
 				</form>
 			</div>
-			<div id="searchImageRight">
+			<div class="searchImageRight">
 				<img id="previewImage" src="#" style="display:none" class="img-responsive" alt="your image" />
 			</div>
 		</div>
@@ -383,7 +404,8 @@
 			</form>
 		</div>
 		<div id="searchPatternTabDiv" style="display:none" class="searchInputDiv">
-			<form  method="post" action="/searchwithpattern" enctype="multipart/form-data" id="formColor" role="form">
+			<div class="searchImageLeft">
+				<form  method="post" action="/searchwithpattern" enctype="multipart/form-data" id="formPattern" role="form">
 					<div class="controls form-inline">
 						<input type="radio" name="category" value="dresses" checked="checked">
 						Dresses
@@ -396,12 +418,13 @@
 					</div>
 						<br>
 						<br>
-						<input type="hidden" id="color" name="color"/>
-					<p>
+						<input type="hidden" id="pattern" name="pattern"/>
+					<!-- <p>
 						<input type="submit" value="Search" class="btn btn-default"/>
-					</p>
-			</form>
-			<div id="patternImagesDiv"><table class = "patternImages" id="patternImages"></table></div>
+					</p> -->
+				</form>
+			</div>
+			<div id="patternImagesDiv" class="searchImageright"><table class = "patternImages" id="patternImages"></table></div>
 		</div>
 		<div id="searchTagTabDiv" style="display:none" class="searchInputDiv">
 			<form  method="post" action="/searchwithtag" enctype="multipart/form-data" id="formColor" role="form">
