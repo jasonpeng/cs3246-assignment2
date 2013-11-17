@@ -67,13 +67,18 @@ app.post("/searchwithcolor", function(req, res){
 	console.log(req.body);
 	if(req.body.color != null){
 			// resizeImage 
-	// exec("java -jar -Xmx4g ImageQuery.jar "+tempPath+" 20", onJavaReturn);
-	res.send("200", req.body);
+	var cmd = {
+			commandType:"searchWithColor",
+			numberOfResult: 20,
+			queryColor: req.body.color,
+			category: req.body.category
+	};
+	console.log(JSON.stringify(cmd));
+	exec("java -jar -Xmx4g ImageQuery.jar "+ "'"+JSON.stringify(cmd)+"'" , onJavaReturn);
 	}
 	else {
 		res.send("400", {message: "No image uploaded!"});
-	}
-	
+	}	
 });
 
  /* serves all the static files */

@@ -46,15 +46,15 @@ public class WebServiceHandler {
 			if(cmd.isCropped){
 				bi = bi.getSubimage(cmd.cropX, cmd.cropY, cmd.cropW, cmd.cropH);
 			}
-			queryWithImage(bi, cmd.numberOfResult, cmd.category);
+			queryWithImage(bi, cmd.numberOfResult, cmd.category, 0.4, 0.4, 0.2);
 		}else if(cmd.commandType.equals("searchWithColor")){
-			int colorValue = Integer.parseInt(cmd.queryColor);
-			
+//			int colorValue = Integer.parseInt(cmd.queryColor);
+			queryWithColor(cmd.queryColor, cmd.numberOfResult, cmd.category);
 		}
 		
 	}
 	
-	private static void queryWithImage(BufferedImage bi, int number, String category)
+	private static void queryWithImage(BufferedImage bi, int number, String category, double hisW, double ccvW, double edgeW)
 			throws ClassNotFoundException {
 		// Extract features of the query and create query classes:
 		ColorHist hist = new ColorHist();
@@ -83,17 +83,17 @@ public class WebServiceHandler {
 			double[] similarityEdge = imageIndex.getSimilarityEdge();
 			double[] similarityCCV = imageIndex.getSimilarityCCV();
 			
-			double scoreHist = hist.computeSimilarity(similarityHist, nSim);
-			double scoreEdge = edge.computeSimilarity(similarityEdge, nSim);
-			double scoreCCV = ccv.computeSimilarity(similarityCCV, nSim);
+			double scoreHist = (hisW<0.001)?0: hist.computeSimilarity(similarityHist, nSim);
+			double scoreEdge = (edgeW<0.001)?0:edge.computeSimilarity(similarityEdge, nSim);
+			double scoreCCV = (ccvW<0.001)?0:ccv.computeSimilarity(similarityCCV, nSim);
 			
 			double normalizedScoreHist = scoreHist * 1;
 			double normalizedScoreEdge = scoreEdge / 10;
 			double normalizedScoreCCV = scoreCCV * 1;
 			
-			double finalScore = normalizedScoreHist * weightHist + 
-					normalizedScoreEdge * weightEdge + 
-					normalizedScoreCCV * weightCCV;
+			double finalScore = normalizedScoreHist * hisW + 
+					normalizedScoreEdge * edgeW + 
+					normalizedScoreCCV * ccvW;
 			
 			Result result = new Result(productHelper.getById(imageIndex.getId()), finalScore);
 			resultList.add(result);
@@ -106,13 +106,15 @@ public class WebServiceHandler {
 	}
 	
 	private static void queryWithColor(int colorValue, int number, String category) throws ClassNotFoundException{
-		int width = 2;
-		int height = 2;
+		int width = 200;
+		int height = 200;
 		BufferedImage bi = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
-		int[] data = {colorValue, colorValue, colorValue, colorValue};
+		int[] data = new int[width*height];
+		for(int i = 0; i < width*height; i++)
+			data[i] = colorValue;
 		bi.setRGB(0, 0, width, height, data, 0, width);
 		
-		queryWithImage(bi, number, category);
+		queryWithImage(bi, number, category, 1, 0, 0);
 	}
 
 }

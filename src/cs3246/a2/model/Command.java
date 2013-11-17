@@ -16,6 +16,6 @@ public class Command {
 	public int cropH;
 	public String category;
 	public String queryImage;
-	public String queryColor;
+	public int queryColor;
 	public int numberOfResult;
 }

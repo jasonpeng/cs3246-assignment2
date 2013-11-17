@@ -30,7 +30,8 @@
     	  	var PATH_TO_IMAGE_FOLDER = "./";
     	  	var DEBUG;
     	  	var SEARCH_TABS = ["#searchImageTab", "#searchColorTab", "#searchPatternTab","#searchTagTab"];
-    	  	var PATTERNS = [];
+    	  	var PATTERN_FOLDER = "./patterns/";
+    	  	var PATTERNS = ["001","002","003","004","005","006","007","008","009","010","011","012"];
     	  	var spinner = new Spinner();
     	  	var jcrop;
 
@@ -99,9 +100,11 @@
                         function(color, context)
                         {
                           var all = color.val('all');
-                          $("#color").val(all.hex);
+                          $("#color").val(parseInt("0x"+all.hex));
                         }
                 );
+
+                rederPatternImages();
 
     	  		$("#imgInp").change(function(){
     	  			startSpin();
@@ -266,7 +269,26 @@
 						$("#tableImages").append(tr);
 					}
 				}
-			}
+			};
+
+			var rederPatternImages =function(){
+				$('#patternImages').remove();
+				$("#patternImagesDiv").append($('<table class = "tableImages" id="patternImages"></table>'));
+				var numOfCol = 6;
+				for(i = 0; i <= (PATTERNS.length-1)/numOfCol; i++){
+					var tr = $('<tr'+" col="+i+'/>');
+					for(j = i*numOfCol; j<(i+1)*numOfCol && j<PATTERNS.length;j++){
+						var image = PATTERNS[j]+".png";
+						var td = $("<td width='50' style='vertical-align : bottom'></td>");
+						var div = $("<div/>");
+						var img = $("<img src='"+PATTERN_FOLDER+image+"'  height='50' max-width='50'/>");
+						tr.append(td);
+						td.append(div);
+						div.append(img);
+					}
+					$('#patternImages').append(tr);
+				}
+			};
 	</script>
 </head>
 <body>
@@ -293,9 +315,9 @@
 								<li>
 									<a id="searchPatternTab" href="#">Pattern</a>
 								</li>
-								<li>
+								<!-- <li>
 									<a id="searchTagTab" href="#">Tag</a>
-								</li>
+								</li> -->
 							</ul>
 						</div>
 						<!--/.nav-collapse -->
@@ -374,11 +396,12 @@
 					</div>
 						<br>
 						<br>
+						<input type="hidden" id="color" name="color"/>
 					<p>
 						<input type="submit" value="Search" class="btn btn-default"/>
 					</p>
 			</form>
-			<table class = "patternImages" id="patternImages"></table>
+			<div id="patternImagesDiv"><table class = "patternImages" id="patternImages"></table></div>
 		</div>
 		<div id="searchTagTabDiv" style="display:none" class="searchInputDiv">
 			<form  method="post" action="/searchwithtag" enctype="multipart/form-data" id="formColor" role="form">
