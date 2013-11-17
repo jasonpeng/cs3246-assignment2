@@ -39,7 +39,8 @@ function onJavaReturn(error, stdout, stderr) {
 app.post("/upload", function(req, res){
 	response = res;
 	console.log("Uploading");
-	if (!req.files.images == null){
+	console.log(req.body);
+	if (!(req.files.image == null)){
 		var tempPath = req.files.image.path;
 		// var targetPath = path.resolve('./uploads/queryImage.jpg');
 		var imageName = req.files.image.name;

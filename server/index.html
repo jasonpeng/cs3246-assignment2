@@ -5,20 +5,38 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<link rel="stylesheet" type="text/css" href="./libs/css/bootstrap.css"/>
 	<link rel="stylesheet" type="text/css" href="./libs/css/fash.css"/>
+	<link rel="stylesheet" type="text/css" href="./libs/css/jquery.Jcrop.min.css"/>
+	<script type="text/javascript" src="./libs/spin.min.js"></script>
 	<script type="text/javascript" src="./libs/jquery-1.10.2.min.js"></script>
-	<script src="http://malsup.github.com/jquery.form.js"></script> 
+	<script src="http://code.jquery.com/jquery-migrate-1.0.0.js"></script>
+	<script src="http://malsup.github.com/jquery.form.js"></script>
 	<script type="text/javascript" src="./libs/jquery-ui.js"></script>
+	<script type="text/javascript" src="./libs/jquery.Jcrop.min.js"></script>
+	<!-- Add fancyBox main JS and CSS files -->
+	<script type="text/javascript" src="./libs/fancybox/jquery.fancybox.js?v=2.1.5"></script>
+	<link rel="stylesheet" type="text/css" href="./libs/fancybox/jquery.fancybox.css?v=2.1.5" media="screen" />
 	<!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
 	<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-    	<!--[if lt IE 9]>
-    	  <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-    	  <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
-    	  <![endif]-->
-    	  <script type="text/javascript">
+	<!--[if lt IE 9]>
+	<script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+	<script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+	<![endif]-->
+	<script type="text/javascript">
 
     	  	var PATH_TO_IMAGE_FOLDER = "./image/";
     	  	var DEBUG;
     	  	var SEARCH_TABS = ["#searchImageTab", "#searchColorTab", "#searchPatternTab","#searchTagTab"];
+    	  	var PATTERNS = [];
+    	  	var spinner = new Spinner();
+    	  	var jcrop;
+
+    	  	var startSpin = function(){
+    	  		spinner.spin($("body")[0]);
+    	  	};
+
+    	  	var stopSpin = function(){
+    	  		spinner.stop();
+    	  	};
 
     	  	var makeActive = function(name){
     	  		for (var i in SEARCH_TABS){
@@ -30,20 +48,44 @@
     	  				$(SEARCH_TABS[i]+"Div").hide();
     	  			}
     	  		}
-    	  	}
+    	  	};
+
+    	  	var fillForm = function(c){
+    	  		// variables can be accessed here as
+      			// c.x, c.y, c.x2, c.y2, c.w, c.h
+      			console.log(c);
+      			var w = $("#previewImage").width();
+      			var h = $("#previewImage").height()
+      			$("#isCropped").val(true);
+      			$("#x1").val(c.x/w);
+      			$("#y1").val(c.y/h);
+      			$("#x2").val(c.x2/w);
+      			$("#y2").val(c.y2/h);
+    	  	};
+
     	  	$(document).ready(function(){
     	  		$("#imgInp").change(function(){
+    	  			startSpin();
+    	  			if( jcrop){
+    	  				jcrop.destroy();
+    	  			}
     	  			readURL(this);
     	  		});	
 
+
     	  		$('#form1').ajaxForm({
+    	  			beforeSerialize: function($form, options) { 
+    	  				startSpin();
+    	  			},
     	  			success: function (result) {
     	  				DEBUG = result;
     	  				console.log(result);
     	  				displayImages(JSON.parse(result.images));
+    	  				stopSpin();
     	  			},
     	  			error: function (error){
     	  				console.log(error.responseJSON);
+    	  				stopSpin();
     	  			}
     	  		});
 
@@ -81,108 +123,205 @@
 
     	  	}); 
 
-    	  	function readURL(input) {
-    	  		if (input.files && input.files[0]) {
-    	  			var reader = new FileReader();
-    	  			reader.onload = function (e) {
-    	  				$('#previewImage').attr('src', e.target.result);
-    	  				$('#previewImage').css("width", 300);
-    	  				$('#previewImage').css("display", "block");
-    	  			}
-    	  			reader.readAsDataURL(input.files[0]);
-    	  		}
-    	  	}
+			var readURL = function(input) {
+				if (input.files && input.files[0]) {
+					var reader = new FileReader();
+					reader.onload = function (e) {
+						var img = new Image;
 
-    	  	function displayImages(images){
-    	  		$('tbody').remove();
-    	  		if (images == []){
-    	  		}
-    	  		else{
-    	  			var table_images = $("#table_images");
-    	  			var numOfCol = 4;
-    	  			for(i = 0; i <= (images.length-1)/numOfCol; i++){
-    	  				var tr = $('<tr'+" col="+i+'/>');
-    	  				for(j = i*numOfCol; j<(i+1)*numOfCol;j++){
-    	  					if(j<images.length){
-    	  						var image = images[j];
-    	  						var td = $("<td width='150' style='vertical-align : bottom'></td>");
-    	  						console.log(PATH_TO_IMAGE_FOLDER+image);
-    	  						var img = $("<img src='"+PATH_TO_IMAGE_FOLDER+image+"' width = '200'/>");
-    	  						var div= $('<form><div class="checkbox" ><label><input type="checkbox" value="'+image+'">'+image+' Relevant</label></div></form>');;
-    	  						tr.append(td);
-    	  						td.append(img);
-    	  						td.append(div);
-    	  					}
-    	  				}
-    	  				$("#table_images").append(tr);
-    	  			}
-    	  		}
-    	  	}
-    	  </script>
+						img.onload = function(){
+							$('#previewImage').attr('src', this.src);
+							var w = this.width;
+							var h = this.height;
+							console.log(this.width);
+							console.log(this.height);
+							// if(this.width > this.height){
+							// 	console.log("w > h "+ 200*(h/w));
+							// 	$('#previewImage').css("width", 200);
+							// 	// $('#previewImage').css("height", 200*(h/w));	
+							// }else{
+							// 	console.log("h > w");
+							// 	$('#previewImage').css("height", 150);	
+							// 	// $('#previewImage').css("width", 150*(w/h));
+							// }
+							var newW = 150*(w/h);
+							$('#previewImage').css("height", 150);	
+							$('#previewImage').css("width", newW);	
+							console.log($('#previewImage').width() + "  " +$('#previewImage').height());
+							$('#previewImage').css("display", "block");
+							$('#previewImage').Jcrop({
+								onSelect: fillForm,
+								onChange: fillForm,
+								boxWidth: newW,
+								boxHeight: h
+							}, function(){
+								jcrop = this;
+							});
+							stopSpin();
+						};
+						
+						
+						img.src = reader.result;
+					}
+					reader.readAsDataURL(input.files[0]);
+				}
+			}
+			
+			var displayImages = function(images){
+				$('#tableImages').remove();
+				$("#imageDisplayDiv").append($('<table class = "tableImages" id="tableImages"></table>'));
+				if (images == []){
+				}
+				else{
+					var numOfCol = 4;
+					for(i = 0; i <= (images.length-1)/numOfCol; i++){
+						var tr = $('<tr'+" col="+i+'/>');
+						for(j = i*numOfCol; j<(i+1)*numOfCol;j++){
+							if(j<images.length){
+								var image = images[j];
+								var td = $("<td width='150' style='vertical-align : bottom'></td>");
+								console.log(PATH_TO_IMAGE_FOLDER+image);
+								var div = $("<div class='imageCell'/>");
+								var a = $('<a class="fancybox" href="'+PATH_TO_IMAGE_FOLDER+image+'" title=""></a>'); 
+								var img = $("<img src='"+PATH_TO_IMAGE_FOLDER+image+"' width = '150' height = '150'/>");
+								// var div= $('<form><div class="checkbox" ><label><input type="checkbox" value="'+image+'">'+image+' Relevant</label></div></form>');
+								tr.append(td);
+								td.append(div);
+								div.append(a);
+								a.append(img);
+								// td.append(div);
+								a.fancybox({tpl: {
+	wrap     : '<div class="fancybox-wrap" tabIndex="-1"><div class="fancybox-skin"><div class="fancybox-outer"><div class="fancybox-inner"></div><div id="fancy-box-side"><p>'+image+'</p></div></div></div></div></div>',
+	image    : '<img class="fancybox-image" src="{href}" alt="" />',
+	iframe   : '<iframe id="fancybox-frame{rnd}" name="fancybox-frame{rnd}" class="fancybox-iframe" frameborder="0" vspace="0" hspace="0"' + ($.browser.msie ? ' allowtransparency="true"' : '') + '></iframe>',
+	error    : '<p class="fancybox-error">The requested content cannot be loaded.<br/>Please try again later.</p>',
+	closeBtn : '<a title="Close" class="fancybox-item fancybox-close" href="javascript:;"></a>',
+	next     : '<a title="Next" class="fancybox-nav fancybox-next" href="javascript:;"><span></span></a>',
+	prev     : '<a title="Previous" class="fancybox-nav fancybox-prev" href="javascript:;"><span></span></a>'
+}});
+							}
+						}
+						$("#tableImages").append(tr);
+					}
+				}
+			}
 
-    	</head>
-    	<body>
-    		<div id="wrap">	
-    			<div id="manuScreen" class="container">
-    				<div class="page-header">
-    					<h1>Search Your Fashion</h1>
-    				</div>
-    				<div>
-    					<div class="navbar navbar-default" role="navigation">
-    						<div class="container">
-          						<div class="navbar-header">
-            						<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-              							<span class="sr-only">Toggle navigation</span>
-              							<span class="icon-bar"></span>
-              							<span class="icon-bar"></span>
-              							<span class="icon-bar"></span>
-            						</button>
-            						<a class="navbar-brand" href="#">Search Method</a>
-            					</div>
-            					<div class="collapse navbar-collapse">
-            						<ul class="nav navbar-nav">
-            							<li class="active"><a id="searchImageTab" href="#">Image</a></li>
-            							<li><a id="searchColorTab" href="#">Color</a></li>
-            							<li><a id="searchPatternTab" href="#">Pattern</a></li>
-            							<li><a id="searchTagTab" href="#">Tag</a></li>
-            						</ul>
-            					</div><!--/.nav-collapse -->
-            				</div>
-            			</div>
+			var displayPatternImages = function(){
+				$('#patternImages').remove();
+				$("#searchPatternTabDiv").append($('<table class = "patternImages" id="patternImages"></table>'));
+				if (PATTERNS == []){
+				}
+				else{
+					var table_images = $("#patternImages");
+					var numOfCol = 4;
+					for(i = 0; i <= (images.length-1)/numOfCol; i++){
+						var tr = $('<tr'+" col="+i+'/>');
+						for(j = i*numOfCol; j<(i+1)*numOfCol;j++){
+							if(j<images.length){
+								var image = images[j];
+								var td = $("<td width='150' style='vertical-align : bottom'></td>");
+								console.log(PATH_TO_IMAGE_FOLDER+image);
+								var img = $("<img src='"+PATH_TO_IMAGE_FOLDER+image+"' width = '200'/>");
+								var div= $('<form><div class="checkbox" ><label><input type="checkbox" value="'+image+'">'+image+' Relevant</label></div></form>');;
+								tr.append(td);
+								td.append(img);
+								td.append(div);
+							}
+						}
+						$("#table_images").append(tr);
+					}
+				}
+			}
+	</script>
 
-            			<div id="searchImageTabDiv" class="searchInputDiv">	
-            				<form  method="post" action="/upload" enctype="multipart/form-data" id="form1" role="form">
-            					<p><input type='file' id="imgInp" name="image" /></p>
-            					<p><input type="submit" value="Search" class="btn btn-default"/></p>
-            				</form>
-            				<img id="previewImage" src="#" style="display:none" class="img-responsive" alt="your image" />
-            			</div>
-            			<div id="searchColorTabDiv" style="display:none" class="searchInputDiv">
-            				<p>Testing Search by color</p>
-            			</div>
-            			<div id="searchPatternTabDiv" style="display:none" class="searchInputDiv">
-            				<p>Testing Search by patternr</p>
-            			</div>
-            			<div id="searchTagTabDiv" style="display:none" class="searchInputDiv">
-            				<p>Testing Search by tag</p>
-            			</div>
-            	</div>
-            	<div>
-            		<table class = "table_books" id="table_images"></table>
-            	</div>
-					<!-- <p>
-						<button type="button" class="btn btn-primary" id="rf-btn">RF</button>
-					</p> -->
-
+</head>
+<body>
+	<div id="wrap">
+		<div id="manuScreen" class="container">
+			<div class="page-header">
+				<h1>Search Your Fashion</h1>
+			</div>
+			<div>
+				<div class="navbar navbar-default" role="navigation">
+					<div class="container">
+						<div class="navbar-header">
+							<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+								<span class="sr-only">Toggle navigation</span>
+								<span class="icon-bar"></span>
+								<span class="icon-bar"></span>
+								<span class="icon-bar"></span>
+							</button>
+							<a class="navbar-brand" href="#">Search Method</a>
+						</div>
+						<div class="collapse navbar-collapse">
+							<ul class="nav navbar-nav">
+								<li class="active">
+									<a id="searchImageTab" href="#">Image</a>
+								</li>
+								<li>
+									<a id="searchColorTab" href="#">Color</a>
+								</li>
+								<li>
+									<a id="searchPatternTab" href="#">Pattern</a>
+								</li>
+								<li>
+									<a id="searchTagTab" href="#">Tag</a>
+								</li>
+							</ul>
+						</div>
+						<!--/.nav-collapse -->
+					</div>
 				</div>
-			</div>	
-			<div id="footer">
-				<div class="container">
-					<p class="text-muted credit">&copy; CS3246 AY1314</p>
+
+				<div id="searchImageTabDiv" class="searchInputDiv">
+					<div id="searchImageLeft">
+						<form  method="post" action="/upload" enctype="multipart/form-data" id="form1" role="form">
+							<p>
+								<input type='file' id="imgInp" name="image" />
+								<input type="hidden" id="isCropped" name="isCropped"/>
+								<input type="radio" name="category" value="dresses" checked="checked">Dresses<br>
+								<input type="radio" name="category" value="shoes">Shoes<br>
+								<input type="radio" name="category" value="tops">Tops<br>
+								<input type="radio" name="category" value="bags">Bags
+								<input type="hidden" id="x1" name="x1"/>
+								<input type="hidden" id="y1" name="y1"/>
+								<input type="hidden" id="x2" name="x2"/>
+								<input type="hidden" id="y2" name="y2"/>
+							</p>
+							<p>
+								<input type="submit" value="Search" class="btn btn-default"/>
+							</p>
+						</form>
+					</div>
+					<div id="searchImageRight">
+						<img id="previewImage" src="#" style="display:none" class="img-responsive" alt="your image" />
+					</div>
+				</div>
+				<div id="searchColorTabDiv" style="display:none" class="searchInputDiv">
+					<p>Testing Search by color</p>
+				</div>
+				<div id="searchPatternTabDiv" style="display:none" class="searchInputDiv">
+					<table class = "patternImages" id="patternImages"></table>	
+				</div>
+				<div id="searchTagTabDiv" style="display:none" class="searchInputDiv">
+					<p>Testing Search by tag</p>
 				</div>
 			</div>
+			<div id="imageDisplayDiv">
+				<table class = "tableImages" id="tableImages"></table>
+			</div>
+			<!-- <p>
+			<button type="button" class="btn btn-primary" id="rf-btn">RF</button>
+		</p>
+		-->
+	</div>
+</div>
+<div id="footer">
+	<div class="container">
+		<p class="text-muted credit">&copy; CS3246 AY1314</p>
+	</div>
+</div>
 
+</body>
 
-		</body>
-
-		</html>
+</html>

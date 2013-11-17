@@ -47,3 +47,25 @@ h1 {
 .container .credit {
   margin: 20px 0;
 }
+
+#searchImageLeft{
+	float: left;
+	width: 200px;
+}
+
+#searchImageRight{
+	margin-left: 220px;
+
+}
+
+.searchInputDiv {
+	height: 160px;
+}
+
+.imageCell {
+	height: 150px;
+	width: 150px;
+	overflow: hidden;
+	vertical-align: middle;
+	display: inline-block;
+}
