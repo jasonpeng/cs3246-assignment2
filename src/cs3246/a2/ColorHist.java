@@ -242,6 +242,11 @@ public class ColorHist extends JFrame implements FeatureExtractor{
                 int r = raster.getSample(i,j,0); 
                 int g = raster.getSample(i,j,1); 
                 int b = raster.getSample(i,j,2); 
+                
+                // Remove white background:
+                if (r >= 250 && g >= 250 && b >= 250){
+                	continue;
+                }
                   
                 int rbin = r / step; 
                 int gbin = g / step; 
@@ -256,7 +261,8 @@ public class ColorHist extends JFrame implements FeatureExtractor{
         for(int i = 0; i < 3*dim; i++) { 
             bins[i] = bins[i]/(3*imHeight*imWidth); 
         } 
-          
+        
+        
         return bins; 
     } 
       
