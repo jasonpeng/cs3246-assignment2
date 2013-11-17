@@ -14,11 +14,11 @@ import cs3246.a2.ColorCoherenceVector;
 import cs3246.a2.ColorHist;
 import cs3246.a2.Constant;
 import cs3246.a2.Document;
-import cs3246.a2.Image;
-import cs3246.a2.ImageDBReader;
 import cs3246.a2.NormalizedSimilarity;
 import cs3246.a2.SobelOperator;
 import cs3246.a2.Util;
+import cs3246.a2.model.ImageIndex;
+import cs3246.a2.model.ImageIndex;
 
 public class WebServiceHandler {
 	
@@ -49,7 +49,7 @@ public class WebServiceHandler {
 		
 		// Read the pre-computed image features:
 		ImageDBReader dbReader = new ImageDBReader(Constant.DB_FILE_NAME);
-		List<Image> images = dbReader.getImages();
+		List<ImageIndex> images = dbReader.getImages();
 		
 		// Create similarity classes:
 		NormalizedSimilarity nSim = new NormalizedSimilarity();
@@ -57,7 +57,7 @@ public class WebServiceHandler {
 		
 		ArrayList<Document> list = new ArrayList<Document>();
 		
-		for (Image image : images){
+		for (ImageIndex image : images){
 			
 			double[] similarityHist = image.getSimilarityHist();
 			double[] similarityEdge = image.getSimilarityEdge();

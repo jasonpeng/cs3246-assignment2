@@ -12,15 +12,15 @@ import javax.imageio.ImageIO;
 import cs3246.a2.ColorCoherenceVector;
 import cs3246.a2.ColorHist;
 import cs3246.a2.Constant;
-import cs3246.a2.Image;
-import cs3246.a2.ImageDBWriter;
 import cs3246.a2.SobelOperator;
 import cs3246.a2.Util;
+import cs3246.a2.model.ImageIndex;
+import cs3246.a2.model.ImageIndex;
 
 public class GenerateImageIndex {
 
 	public static void main(String[] args) {
-		List<Image> images = new ArrayList<Image>();
+		List<ImageIndex> images = new ArrayList<ImageIndex>();
 		String IMAGE_FOLDER = args[0];
 		try {
 			for (int i = 1; i <= 400; i++) {
@@ -50,7 +50,7 @@ public class GenerateImageIndex {
 					ColorCoherenceVector ccv = new ColorCoherenceVector();
 					double[] ccvResult = ccv.getFeature(bi);
 	
-					Image image = new Image(filename, ccvResult, histogramResult,
+					ImageIndex image = new ImageIndex(filename, ccvResult, histogramResult,
 							edgeDirectionResult, "");
 					images.add(image);
 				} catch (Exception e) {
