@@ -47,6 +47,7 @@ public class WebServiceHandler {
 			}
 			queryWithImage(bi, cmd.numberOfResult, cmd.category);
 		}else if(cmd.commandType.equals("searchWithColor")){
+			int colorValue = Integer.parseInt(cmd.queryColor);
 			
 		}
 		
@@ -75,7 +76,8 @@ public class WebServiceHandler {
 		//AdjacentSimilarity aSim = new AdjacentSimilarity();
 		
 		ArrayList<Result> resultList = new ArrayList<Result>();
-		for (ImageIndex imageIndex : imageIndexList){
+		for (int i = 0; i < number; i++){
+			ImageIndex imageIndex = imageIndexList.get(i);
 			
 			double[] similarityHist = imageIndex.getSimilarityHist();
 			double[] similarityEdge = imageIndex.getSimilarityEdge();
@@ -102,4 +104,11 @@ public class WebServiceHandler {
 		Gson gson = new Gson();
 		System.out.print(gson.toJson(resultList));
 	}
+	
+	private static void queryWithColor(int colorValue, int number, String category){
+		BufferedImage bi
+	}
+
 }
+
+
