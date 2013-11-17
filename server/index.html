@@ -27,7 +27,7 @@
 	<![endif]-->
 	<script type="text/javascript">
 
-    	  	var PATH_TO_IMAGE_FOLDER = "./image/";
+    	  	var PATH_TO_IMAGE_FOLDER = "./";
     	  	var DEBUG;
     	  	var SEARCH_TABS = ["#searchImageTab", "#searchColorTab", "#searchPatternTab","#searchTagTab"];
     	  	var PATTERNS = [];
@@ -235,19 +235,25 @@
 						for(j = i*numOfCol; j<(i+1)*numOfCol;j++){
 							if(j<images.length){
 								var image = images[j];
+								var product = image.product;
 								var td = $("<td width='150' style='vertical-align : bottom'></td>");
-								console.log(PATH_TO_IMAGE_FOLDER+image);
+								console.log(PATH_TO_IMAGE_FOLDER+product.mFilename);
 								var div = $("<div class='imageCell'/>");
-								var a = $('<a class="fancybox" href="'+PATH_TO_IMAGE_FOLDER+image+'" title=""></a>'); 
-								var img = $("<img src='"+PATH_TO_IMAGE_FOLDER+image+"' width = '150' height = '150'/>");
+								var a = $('<a class="fancybox" href="'+PATH_TO_IMAGE_FOLDER+product.mFilename+'" title="'+product.mName+'"></a>'); 
+								var img = $("<img src='"+PATH_TO_IMAGE_FOLDER+product.mFilename+"'  height='150' max-width='150'/>");
 								// var div= $('<form><div class="checkbox" ><label><input type="checkbox" value="'+image+'">'+image+' Relevant</label></div></form>');
 								tr.append(td);
 								td.append(div);
 								div.append(a);
 								a.append(img);
 								// td.append(div);
-								a.fancybox({tpl: {
-	wrap     : '<div class="fancybox-wrap" tabIndex="-1"><div class="fancybox-skin"><div class="fancybox-outer"><div class="fancybox-inner"></div><div id="fancy-box-side"><p>'+image+'</p></div></div></div></div></div>',
+								a.fancybox({helpers : {
+    												title : {
+    														type : 'over'
+    														}
+    													},
+    	tpl: {
+	wrap     : '<div class="fancybox-wrap" tabIndex="-1"><div class="fancybox-skin"><div class="fancybox-outer"><div class="fancybox-inner"></div><div id="fancy-box-side"><p><a href='+product.mUrl+' target="_new">'+product.mUrl+'</a></p></div></div></div></div></div>',
 	image    : '<img class="fancybox-image" src="{href}" alt="" />',
 	iframe   : '<iframe id="fancybox-frame{rnd}" name="fancybox-frame{rnd}" class="fancybox-iframe" frameborder="0" vspace="0" hspace="0"' + ($.browser.msie ? ' allowtransparency="true"' : '') + '></iframe>',
 	error    : '<p class="fancybox-error">The requested content cannot be loaded.<br/>Please try again later.</p>',
