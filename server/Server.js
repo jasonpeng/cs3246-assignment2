@@ -36,10 +36,11 @@ function onJavaReturn(error, stdout, stderr) {
 	});
 }
 
-app.post("/upload", function(req, res){
+app.post("/searchwithimage", function(req, res){
 	response = res;
 	console.log("Uploading");
-	if (!req.files.images == null){
+	console.log(req.body);
+	if (!(req.files.image == null)){
 		var tempPath = req.files.image.path;
 		// var targetPath = path.resolve('./uploads/queryImage.jpg');
 		var imageName = req.files.image.name;
@@ -47,7 +48,23 @@ app.post("/upload", function(req, res){
 		// res.send({
 		// 	images:[1,3,7,9]
 		// });
+		var coor = req.body;
+		// resizeImage 
 		exec("java -jar -Xmx4g ImageQuery.jar "+tempPath+" 20", onJavaReturn);	
+	}
+	else {
+		res.send("400", {message: "No image uploaded!"});
+	}
+	
+});
+
+app.post("/searchwithcolor", function(req, res){
+	response = res;
+	console.log(req.body);
+	if(req.body.color != null){
+			// resizeImage 
+	// exec("java -jar -Xmx4g ImageQuery.jar "+tempPath+" 20", onJavaReturn);
+	res.send("200", req.body);
 	}
 	else {
 		res.send("400", {message: "No image uploaded!"});
